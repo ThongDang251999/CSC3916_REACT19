@@ -1,5 +1,11 @@
+body {
+  background-color: #121212;
+  color: #ffffff;
+}
+
 .App {
   text-align: center;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -57,24 +63,23 @@
 }
 
 .auth-container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Dark-themed tabs styling */
 .dark-tabs .nav-link {
-  background-color: #343a40; /* dark background */
-  color: #f8f9fa;          /* light text */
-  border: none;
-  border-bottom: 2px solid transparent;
-  margin: 0 5px;
-  padding: 10px 15px;
+  color: #adb5bd;
 }
 
 .dark-tabs .nav-link.active {
-  background-color: #495057; /* slightly lighter dark for active tab */
-  color: #ffffff;
-  border-bottom: 2px solid #007bff; /* blue underline for active tab */
+  background-color: #343a40;
+  color: #fff;
+  border-color: #495057 #495057 #343a40;
 }
 
 .image {
@@ -90,4 +95,98 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Movie List */
+.carousel {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+}
+
+.carousel-item {
+  height: 500px;
+  text-align: center;
+}
+
+.carousel-item img {
+  max-height: 400px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.carousel-caption {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 1rem;
+  bottom: 0;
+}
+
+/* Movie Detail */
+.movie-detail-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.reviews-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Forms */
+.form-control {
+  background-color: #2c2c2c;
+  border-color: #444;
+  color: #fff;
+}
+
+.form-control:focus {
+  background-color: #333;
+  color: #fff;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Search Component */
+.search-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+}
+
+.results-container {
+  margin-top: 2rem;
+}
+
+.search-movie-img {
+  height: 300px;
+  object-fit: cover;
+}
+
+/* Accordion custom styling */
+.accordion-button {
+  background-color: #2c2c2c !important;
+  color: white !important;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #212529 !important;
+  color: white !important;
+}
+
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+}
+
+.accordion-item {
+  border-color: #444 !important;
+}
+
+.accordion-body {
+  background-color: #212529;
+  color: white;
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from "../actions/authActions";
+import { BsSearch } from 'react-icons/bs';
 
 function MovieHeader() {
     const dispatch = useDispatch();
@@ -15,31 +16,43 @@ function MovieHeader() {
     };
 
     return (
-        <div>
-            <Navbar expand="lg" bg="dark" variant="dark">
-                <Navbar.Brand as={NavLink} to="/">Movie App</Navbar.Brand> 
+        <Navbar expand="lg" bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand as={NavLink} to="/">Movie App</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                    <Nav.Link as={NavLink} to="/movielist" disabled={!loggedIn}> 
-                        Movie List
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to={'/movie/' + (selectedMovie? selectedMovie._id: '')} disabled={!loggedIn}>
-                        Movie Detail
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to="/signin"> 
-                        {loggedIn? (
-                        <span onClick={logout} style={{ cursor: 'pointer' }}>
-                            Logout
-                        </span>
-                        ): (
-                        'Login'
+                    <Nav className="me-auto">
+                        <Nav.Link as={NavLink} to="/movielist" disabled={!loggedIn}>
+                            Movie List
+                        </Nav.Link>
+                        <Nav.Link as={NavLink} to="/search" disabled={!loggedIn}>
+                            <BsSearch /> Search
+                        </Nav.Link>
+                        {selectedMovie && (
+                            <Nav.Link as={NavLink} to={'/movie/' + selectedMovie._id} disabled={!loggedIn}>
+                                Movie Detail
+                            </Nav.Link>
                         )}
-                    </Nav.Link>
-                </Nav>
+                    </Nav>
+                    <Nav>
+                        {loggedIn && (
+                            <Navbar.Text className="me-3">
+                                Signed in as: <span className="text-light">{username}</span>
+                            </Navbar.Text>
+                        )}
+                        <Nav.Link as={NavLink} to="/signin">
+                            {loggedIn ? (
+                                <span onClick={logout} style={{ cursor: 'pointer' }}>
+                                    Logout
+                                </span>
+                            ) : (
+                                'Login / Register'
+                            )}
+                        </Nav.Link>
+                    </Nav>
                 </Navbar.Collapse>
-            </Navbar>
-        </div>
+            </Container>
+        </Navbar>
     );
 }
 

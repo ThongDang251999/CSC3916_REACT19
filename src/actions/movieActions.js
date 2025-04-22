@@ -23,6 +23,20 @@ function movieSet(movie) {
     }
 }
 
+function reviewSubmitted() {
+    return {
+        type: actionTypes.SUBMIT_REVIEW,
+        result: true
+    }
+}
+
+function moviesSearched(movies) {
+    return {
+        type: actionTypes.SEARCH_MOVIES,
+        searchResults: movies
+    }
+}
+
 export function setMovie(movie) {
     return dispatch => {
         dispatch(movieSet(movie));
@@ -68,5 +82,72 @@ export function fetchMovies() {
         }).then((res) => {
             dispatch(moviesFetched(res));
         }).catch((e) => console.log(e));
+    }
+}
+
+export function searchMovies(searchTerm, searchType = 'title') {
+    return dispatch => {
+        dispatch({ type: actionTypes.SEARCH_MOVIES_REQUEST });
+        
+        return fetch(`${env.REACT_APP_API_URL}/movies/search`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                searchTerm: searchTerm,
+                searchType: searchType
+            }),
+            mode: 'cors'
+        }).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json()
+        }).then((res) => {
+            dispatch(moviesSearched(res));
+            return res;
+        }).catch((e) => {
+            console.log(e);
+            dispatch({ 
+                type: actionTypes.SEARCH_MOVIES_ERROR, 
+                error: e.message 
+            });
+            throw e;
+        });
+    }
+}
+
+export function submitReview(reviewData) {
+    return dispatch => {
+        return fetch(`${env.REACT_APP_API_URL}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                movieId: reviewData.movieId,
+                rating: reviewData.rating,
+                review: reviewData.comment
+            }),
+            mode: 'cors'
+        }).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json()
+        }).then((res) => {
+            dispatch(reviewSubmitted());
+            // Fetch the movie again to update the reviews
+            dispatch(fetchMovie(reviewData.movieId));
+            return res;
+        }).catch((e) => {
+            console.log(e);
+            throw e;
+        });
     }
 }

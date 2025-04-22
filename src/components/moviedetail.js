@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { fetchMovie } from '../actions/movieActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, ListGroup, ListGroupItem, Image } from 'react-bootstrap';
+import { Card, ListGroup, ListGroupItem, Image, Row, Col, Badge } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
-import { useParams } from 'react-router-dom'; // Import useParams
+import { useParams } from 'react-router-dom';
+import ReviewForm from './reviewform';
 
 const MovieDetail = () => {
   const dispatch = useDispatch();
-  const { movieId } = useParams(); // Get movieId from URL parameters
+  const { movieId } = useParams();
   const selectedMovie = useSelector(state => state.movie.selectedMovie);
-  const loading = useSelector(state => state.movie.loading); // Assuming you have a loading state in your reducer
-  const error = useSelector(state => state.movie.error); // Assuming you have an error state in your reducer
-
+  const loading = useSelector(state => state.movie.loading);
+  const error = useSelector(state => state.movie.error);
+  const loggedIn = useSelector(state => state.auth.loggedIn);
 
   useEffect(() => {
     dispatch(fetchMovie(movieId));
@@ -19,52 +20,96 @@ const MovieDetail = () => {
 
   const DetailInfo = () => {
     if (loading) {
-      return <div>Loading....</div>;
+      return <div className="text-center p-5">Loading movie details...</div>;
     }
 
     if (error) {
-      return <div>Error: {error}</div>;
+      return <div className="text-center p-5 text-danger">Error: {error}</div>;
     }
 
     if (!selectedMovie) {
-      return <div>No movie data available.</div>;
+      return <div className="text-center p-5">No movie data available.</div>;
     }
 
     return (
-      <Card className="bg-dark text-dark p-4 rounded">
-        <Card.Header>Movie Detail</Card.Header>
-        <Card.Body>
-          <Image className="image" src={selectedMovie.imageUrl} thumbnail />
-        </Card.Body>
-        <ListGroup>
-          <ListGroupItem>{selectedMovie.title}</ListGroupItem>
-          <ListGroupItem>
-            {selectedMovie.actors.map((actor, i) => (
-              <p key={i}>
-                <b>{actor.actorName}</b> {actor.characterName}
-              </p>
-            ))}
-          </ListGroupItem>
-          <ListGroupItem>
-            <h4>
-              <BsStarFill /> {selectedMovie.avgRating}
-            </h4>
-          </ListGroupItem>
-        </ListGroup>
-        <Card.Body>
-          {selectedMovie.reviews.map((review, i) => (
-            <p key={i}>
-              <b>{review.username}</b>&nbsp; {review.review} &nbsp; <BsStarFill />{' '}
-              {review.rating}
-            </p>
-          ))}
-        </Card.Body>
-      </Card>
+      <div className="movie-detail-container">
+        <Card className="bg-dark text-white mb-4">
+          <Card.Header className="bg-primary text-white">
+            <h3>{selectedMovie.title} ({selectedMovie.releaseDate})</h3>
+          </Card.Header>
+          <Card.Body>
+            <Row>
+              <Col md={4}>
+                <Image 
+                  src={selectedMovie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
+                  alt={selectedMovie.title}
+                  fluid 
+                  className="mb-3" 
+                />
+                <div className="text-center mb-3">
+                  <h4>
+                    <BsStarFill className="text-warning" /> {selectedMovie.avgRating ? selectedMovie.avgRating.toFixed(1) : 'No ratings'}
+                  </h4>
+                </div>
+              </Col>
+              <Col md={8}>
+                <h4>Cast</h4>
+                <ListGroup className="mb-4">
+                  {selectedMovie.actors && selectedMovie.actors.map((actor, i) => (
+                    <ListGroupItem key={i}>
+                      <b>{actor.actorName}</b> as {actor.characterName}
+                    </ListGroupItem>
+                  ))}
+                </ListGroup>
+
+                <h4>Genre</h4>
+                <p>{selectedMovie.genre}</p>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+
+        <Card className="bg-dark text-white mb-4">
+          <Card.Header className="bg-primary text-white">
+            <h4>Reviews</h4>
+          </Card.Header>
+          <Card.Body>
+            {selectedMovie.reviews && selectedMovie.reviews.length > 0 ? (
+              <div className="reviews-container">
+                {selectedMovie.reviews.map((review, i) => (
+                  <Card key={i} className="mb-3 bg-secondary">
+                    <Card.Body>
+                      <div className="d-flex justify-content-between">
+                        <h5>{review.username || 'Anonymous'}</h5>
+                        <span className="text-warning">
+                          <BsStarFill /> {review.rating}
+                        </span>
+                      </div>
+                      <Card.Text>{review.review || 'No comment'}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p>No reviews yet. Be the first to review!</p>
+            )}
+          </Card.Body>
+        </Card>
+
+        {loggedIn ? (
+          <ReviewForm movieId={movieId} />
+        ) : (
+          <Card className="bg-dark text-white">
+            <Card.Body className="text-center">
+              <p>Please log in to submit a review.</p>
+            </Card.Body>
+          </Card>
+        )}
+      </div>
     );
   };
 
   return <DetailInfo />;
 };
-
 
 export default MovieDetail;
