@@ -126,13 +126,75 @@ body {
 
 /* Movie Detail */
 .movie-detail-container {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
-.reviews-container {
-  max-height: 400px;
-  overflow-y: auto;
+.movie-poster-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.movie-poster-img {
+  max-height: 500px;
+  border: 5px solid #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.movie-info-card {
+  border-radius: 8px;
+  background-color: #1e2234 !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.movie-cast {
+  margin: 1.5rem 0;
+}
+
+.cast-member {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #444;
+}
+
+.cast-member:last-child {
+  border-bottom: none;
+}
+
+.movie-rating {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.5rem;
+  padding: 0.5rem 1.5rem;
+  background-color: #1a1a2e;
+  border-radius: 50px;
+}
+
+.rating-value {
+  margin-left: 0.5rem;
+  font-weight: bold;
+}
+
+.reviews-section {
+  border-radius: 8px;
+  background-color: #1e2234 !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.review-item {
+  background-color: #2a2a40;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  color: #e1e1e1;
+}
+
+.review-text {
+  color: #c5c5c5;
 }
 
 /* Forms */
@@ -189,4 +251,43 @@ body {
 .accordion-body {
   background-color: #212529;
   color: white;
+}
+
+/* Movie List Styling */
+.movie-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.movie-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  overflow: hidden;
+  border: none;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.movie-card-img-container {
+  height: 350px;
+  overflow: hidden;
+}
+
+.movie-card-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.movie-card:hover .movie-card-img {
+  transform: scale(1.05);
+}
+
+.movie-card .card-body {
+  background-color: #1e2234;
 }
