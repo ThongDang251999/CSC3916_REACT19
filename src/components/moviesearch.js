@@ -24,6 +24,22 @@ const MovieSearch = () => {
     dispatch(setMovie(movie));
   };
 
+  // Function to validate if a string is a valid URL
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  // Get image URL, either from direct URL or from backend path
+  const getImageUrl = (url) => {
+    if (!url) return 'https://via.placeholder.com/300x450?text=No+Image';
+    return isValidUrl(url) ? url : url;
+  };
+
   return (
     <div className="search-container mb-5">
       <h3 className="mb-3">Search Movies</h3>
@@ -61,7 +77,7 @@ const MovieSearch = () => {
                 <Card className="h-100 bg-dark text-white">
                   <Card.Img 
                     variant="top" 
-                    src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
+                    src={getImageUrl(movie.imageUrl)} 
                     alt={movie.title}
                     className="search-movie-img"
                   />
@@ -101,7 +117,7 @@ const MovieSearch = () => {
                   <Row>
                     <Col md={4}>
                       <img 
-                        src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
+                        src={getImageUrl(movie.imageUrl)} 
                         alt={movie.title}
                         className="img-fluid mb-2"
                       />

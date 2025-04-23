@@ -40,6 +40,32 @@ function moviesSearched(movies) {
     }
 }
 
+function fetchMoviesRequest() {
+    return {
+        type: actionTypes.FETCH_MOVIES_REQUEST
+    }
+}
+
+function fetchMoviesError(error) {
+    return {
+        type: actionTypes.FETCH_MOVIES_ERROR,
+        error
+    }
+}
+
+function fetchMovieRequest() {
+    return {
+        type: actionTypes.FETCH_MOVIE_REQUEST
+    }
+}
+
+function fetchMovieError(error) {
+    return {
+        type: actionTypes.FETCH_MOVIE_ERROR,
+        error
+    }
+}
+
 export function setMovie(movie) {
     return dispatch => {
         dispatch(movieSet(movie));
@@ -49,6 +75,8 @@ export function setMovie(movie) {
 export function fetchMovie(movieId) {
     console.log('Fetching movie details for:', movieId);
     return dispatch => {
+        dispatch(fetchMovieRequest());
+        
         return fetch(`${env.REACT_APP_API_URL}/movies/${movieId}?reviews=true`, {
             method: 'GET',
             headers: {
@@ -60,14 +88,17 @@ export function fetchMovie(movieId) {
         }).then((response) => {
             console.log('Movie details response:', response.status);
             if (!response.ok) {
-                throw Error(response.statusText);
+                throw new Error(response.statusText || 'Failed to fetch movie details');
             }
             return response.json()
         }).then((res) => {
             console.log('Movie details received:', res);
             dispatch(movieFetched(res));
+            return res;
         }).catch((e) => {
             console.error('Error fetching movie details:', e);
+            dispatch(fetchMovieError(e.message));
+            throw e;
         });
     }
 }
@@ -75,6 +106,8 @@ export function fetchMovie(movieId) {
 export function fetchMovies() {
     console.log('Fetching movies list with reviews=true');
     return dispatch => {
+        dispatch(fetchMoviesRequest());
+        
         return fetch(`${env.REACT_APP_API_URL}/movies?reviews=true`, {
             method: 'GET',
             headers: {
@@ -86,14 +119,17 @@ export function fetchMovies() {
         }).then((response) => {
             console.log('Movies list response:', response.status);
             if (!response.ok) {
-                throw Error(response.statusText);
+                throw new Error(response.statusText || 'Failed to fetch movies');
             }
             return response.json()
         }).then((res) => {
             console.log('Movies received:', res);
             dispatch(moviesFetched(res));
+            return res;
         }).catch((e) => {
             console.error('Error fetching movies:', e);
+            dispatch(fetchMoviesError(e.message));
+            throw e;
         });
     }
 }
@@ -118,7 +154,7 @@ export function searchMovies(searchTerm, searchType = 'title') {
         }).then((response) => {
             console.log('Search response:', response.status);
             if (!response.ok) {
-                throw Error(response.statusText);
+                throw new Error(response.statusText || 'Failed to search movies');
             }
             return response.json()
         }).then((res) => {
@@ -155,14 +191,13 @@ export function submitReview(reviewData) {
         }).then((response) => {
             console.log('Review submission response:', response.status);
             if (!response.ok) {
-                throw Error(response.statusText);
+                throw new Error(response.statusText || 'Failed to submit review');
             }
             return response.json()
         }).then((res) => {
             console.log('Review submitted successfully:', res);
             dispatch(reviewSubmitted());
-            // Fetch the movie again to update the reviews
-            dispatch(fetchMovie(reviewData.movieId));
+            // We don't need to fetch the movie again here as we'll use the callback in the component
             return res;
         }).catch((e) => {
             console.error('Error submitting review:', e);

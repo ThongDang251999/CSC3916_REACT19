@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { submitReview } from '../actions/movieActions';
 import { BsStarFill } from 'react-icons/bs';
 
-const ReviewForm = ({ movieId }) => {
+const ReviewForm = ({ movieId, onReviewAdded }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [validated, setValidated] = useState(false);
@@ -48,6 +48,11 @@ const ReviewForm = ({ movieId }) => {
         setComment('');
         setValidated(false);
         setSubmitting(false);
+        
+        // Call the callback to refresh movie data
+        if (onReviewAdded) {
+          onReviewAdded();
+        }
         
         // Hide success message after 3 seconds
         setTimeout(() => {

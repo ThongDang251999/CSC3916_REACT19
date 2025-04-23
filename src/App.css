@@ -1,11 +1,15 @@
-body {
-  background-color: #121212;
-  color: #ffffff;
+/* Base styles */
+body, html {
+  background-color: #141414;
+  color: #f5f5f5;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
 .App {
   text-align: center;
   min-height: 100vh;
+  background-color: #141414;
+  color: #f5f5f5;
 }
 
 .App-logo {
@@ -66,20 +70,36 @@ body {
   max-width: 500px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #1e1e1e;
+  background-color: #1f1f1f;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Header styles */
+.navbar {
+  background-color: #000000 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand, .nav-link {
+  color: #f5f5f5 !important;
+}
+
+.nav-link:hover {
+  color: #e50914 !important;
 }
 
 /* Dark-themed tabs styling */
 .dark-tabs .nav-link {
-  color: #adb5bd;
+  color: #f5f5f5 !important;
+  background-color: transparent;
+  border-color: #444;
 }
 
 .dark-tabs .nav-link.active {
-  background-color: #343a40;
-  color: #fff;
-  border-color: #495057 #495057 #343a40;
+  color: #ffffff !important;
+  background-color: #e50914;
+  border-color: #e50914;
 }
 
 .image {
@@ -126,9 +146,8 @@ body {
 
 /* Movie Detail */
 .movie-detail-container {
+  margin: 2rem auto;
   max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
 }
 
 .movie-poster-section {
@@ -138,15 +157,14 @@ body {
 }
 
 .movie-poster-img {
-  max-height: 500px;
-  border: 5px solid #fff;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  max-height: 450px;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
-.movie-info-card {
+.movie-info-card, .reviews-section {
   border-radius: 8px;
-  background-color: #1e2234 !important;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .movie-cast {
@@ -163,12 +181,11 @@ body {
 }
 
 .movie-rating {
-  display: inline-flex;
-  align-items: center;
-  font-size: 1.5rem;
-  padding: 0.5rem 1.5rem;
-  background-color: #1a1a2e;
-  border-radius: 50px;
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  font-size: 1.2rem;
 }
 
 .rating-value {
@@ -176,16 +193,15 @@ body {
   font-weight: bold;
 }
 
-.reviews-section {
+.review-item {
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  background-color: #1e2234 !important;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
 }
 
-.review-item {
-  background-color: #2a2a40;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+.review-item:hover {
+  transform: translateX(5px);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .reviewer-name {
@@ -213,75 +229,59 @@ body {
 
 /* Search Component */
 .search-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 1rem;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-}
-
-.results-container {
-  margin-top: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
 }
 
 .search-movie-img {
-  height: 300px;
+  height: 250px;
   object-fit: cover;
 }
 
 /* Accordion custom styling */
-.accordion-button {
-  background-color: #2c2c2c !important;
-  color: white !important;
-}
-
 .accordion-button:not(.collapsed) {
-  background-color: #212529 !important;
-  color: white !important;
-}
-
-.accordion-button::after {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
-}
-
-.accordion-item {
-  border-color: #444 !important;
-}
-
-.accordion-body {
-  background-color: #212529;
+  background-color: #252525;
   color: white;
+}
+
+.accordion-button {
+  background-color: #1f1f1f;
+  color: white;
+}
+
+.accordion-button:after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-button:not(.collapsed):after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 
 /* Movie List Styling */
 .movie-list-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  margin-top: 2rem;
 }
 
 .movie-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
   overflow: hidden;
   border: none;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .movie-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  transform: translateY(-10px);
 }
 
 .movie-card-img-container {
-  height: 350px;
+  height: 300px;
   overflow: hidden;
 }
 
 .movie-card-img {
   height: 100%;
-  width: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.3s ease;
 }
 
 .movie-card:hover .movie-card-img {
@@ -290,4 +290,42 @@ body {
 
 .movie-card .card-body {
   background-color: #1e2234;
+}
+
+/* Review form */
+.rating-input::-webkit-inner-spin-button, 
+.rating-input::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.rating-input {
+  -moz-appearance: textfield;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: #cc0812 !important;
+  border-color: #cc0812 !important;
+}
+
+.btn-outline-light:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .movie-card-img-container {
+    height: 250px;
+  }
+  
+  .movie-poster-img {
+    max-height: 350px;
+  }
 }
