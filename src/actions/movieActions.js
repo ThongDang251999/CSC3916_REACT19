@@ -2,6 +2,9 @@ import actionTypes from '../constants/actionTypes';
 //import runtimeEnv from '@mars/heroku-js-runtime-env'
 const env = process.env;
 
+// For debugging
+console.log('API URL:', env.REACT_APP_API_URL);
+
 function moviesFetched(movies) {
     return {
         type: actionTypes.FETCH_MOVIES,
@@ -44,6 +47,7 @@ export function setMovie(movie) {
 }
 
 export function fetchMovie(movieId) {
+    console.log('Fetching movie details for:', movieId);
     return dispatch => {
         return fetch(`${env.REACT_APP_API_URL}/movies/${movieId}?reviews=true`, {
             method: 'GET',
@@ -54,17 +58,22 @@ export function fetchMovie(movieId) {
             },
             mode: 'cors'
         }).then((response) => {
+            console.log('Movie details response:', response.status);
             if (!response.ok) {
                 throw Error(response.statusText);
             }
             return response.json()
         }).then((res) => {
+            console.log('Movie details received:', res);
             dispatch(movieFetched(res));
-        }).catch((e) => console.log(e));
+        }).catch((e) => {
+            console.error('Error fetching movie details:', e);
+        });
     }
 }
 
 export function fetchMovies() {
+    console.log('Fetching movies list with reviews=true');
     return dispatch => {
         return fetch(`${env.REACT_APP_API_URL}/movies?reviews=true`, {
             method: 'GET',
@@ -75,17 +84,22 @@ export function fetchMovies() {
             },
             mode: 'cors'
         }).then((response) => {
+            console.log('Movies list response:', response.status);
             if (!response.ok) {
                 throw Error(response.statusText);
             }
             return response.json()
         }).then((res) => {
+            console.log('Movies received:', res);
             dispatch(moviesFetched(res));
-        }).catch((e) => console.log(e));
+        }).catch((e) => {
+            console.error('Error fetching movies:', e);
+        });
     }
 }
 
 export function searchMovies(searchTerm, searchType = 'title') {
+    console.log('Searching movies:', searchTerm, 'by', searchType);
     return dispatch => {
         dispatch({ type: actionTypes.SEARCH_MOVIES_REQUEST });
         
@@ -102,15 +116,17 @@ export function searchMovies(searchTerm, searchType = 'title') {
             }),
             mode: 'cors'
         }).then((response) => {
+            console.log('Search response:', response.status);
             if (!response.ok) {
                 throw Error(response.statusText);
             }
             return response.json()
         }).then((res) => {
+            console.log('Search results:', res);
             dispatch(moviesSearched(res));
             return res;
         }).catch((e) => {
-            console.log(e);
+            console.error('Error searching movies:', e);
             dispatch({ 
                 type: actionTypes.SEARCH_MOVIES_ERROR, 
                 error: e.message 
@@ -121,6 +137,7 @@ export function searchMovies(searchTerm, searchType = 'title') {
 }
 
 export function submitReview(reviewData) {
+    console.log('Submitting review:', reviewData);
     return dispatch => {
         return fetch(`${env.REACT_APP_API_URL}/reviews`, {
             method: 'POST',
@@ -136,17 +153,19 @@ export function submitReview(reviewData) {
             }),
             mode: 'cors'
         }).then((response) => {
+            console.log('Review submission response:', response.status);
             if (!response.ok) {
                 throw Error(response.statusText);
             }
             return response.json()
         }).then((res) => {
+            console.log('Review submitted successfully:', res);
             dispatch(reviewSubmitted());
             // Fetch the movie again to update the reviews
             dispatch(fetchMovie(reviewData.movieId));
             return res;
         }).catch((e) => {
-            console.log(e);
+            console.error('Error submitting review:', e);
             throw e;
         });
     }

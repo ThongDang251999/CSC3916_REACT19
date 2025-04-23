@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovie } from "../actions/movieActions";
-import MovieDetail from "../components/moviedetail"
+import MovieDetail from "../components/moviedetail";
 
 // support routing
 
-function Movie(props) {
-    const [selectedMovie] = useState(props.selectedMovie);
+function Movie() {
     const params = useParams();
     const movieId = params.movieId;
-    console.log(movieId);
     const dispatch = useDispatch();
-    if (selectedMovie == null) {
-        dispatch(fetchMovie(movieId));
-    }
+    const selectedMovie = useSelector(state => state.movie.selectedMovie);
 
-    return (<MovieDetail movieId={movieId} />)
+    // Always fetch the movie data when component mounts or movieId changes
+    useEffect(() => {
+        console.log("Movie component mounted, fetching movie ID:", movieId);
+        dispatch(fetchMovie(movieId));
+    }, [dispatch, movieId]);
+
+    // Debugging
+    console.log("Current selected movie:", selectedMovie);
+    
+    return <MovieDetail movieId={movieId} />;
 }
 
 export default Movie;

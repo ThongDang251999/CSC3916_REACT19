@@ -10,6 +10,7 @@ const ReviewForm = ({ movieId }) => {
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
@@ -29,6 +30,7 @@ const ReviewForm = ({ movieId }) => {
 
     setError('');
     setValidated(true);
+    setSubmitting(true);
     
     const reviewData = {
       movieId,
@@ -36,12 +38,16 @@ const ReviewForm = ({ movieId }) => {
       comment
     };
 
+    console.log("Submitting review data:", reviewData);
+
     dispatch(submitReview(reviewData))
       .then(() => {
+        console.log("Review submitted successfully");
         setSuccess(true);
         setRating(0);
         setComment('');
         setValidated(false);
+        setSubmitting(false);
         
         // Hide success message after 3 seconds
         setTimeout(() => {
@@ -49,7 +55,9 @@ const ReviewForm = ({ movieId }) => {
         }, 3000);
       })
       .catch(err => {
+        console.error("Error submitting review:", err);
         setError('Failed to submit review. Please try again.');
+        setSubmitting(false);
       });
   };
 
@@ -102,8 +110,13 @@ const ReviewForm = ({ movieId }) => {
         </Row>
         
         <div className="d-flex justify-content-center mt-3">
-          <Button variant="primary" type="submit" className="px-4">
-            Submit Review
+          <Button 
+            variant="primary" 
+            type="submit" 
+            className="px-4"
+            disabled={submitting}
+          >
+            {submitting ? 'Submitting...' : 'Submit Review'}
           </Button>
         </div>
       </Form>
