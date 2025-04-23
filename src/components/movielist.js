@@ -78,7 +78,7 @@ function MovieList() {
                             <div className="movie-card-img-container">
                                 <Card.Img 
                                     variant="top" 
-                                    src={getImageUrl(movie.imageUrl)} 
+                                    src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
                                     alt={movie.title}
                                     className="movie-card-img"
                                 />

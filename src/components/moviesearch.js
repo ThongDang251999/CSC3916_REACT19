@@ -77,7 +77,7 @@ const MovieSearch = () => {
                 <Card className="h-100 bg-dark text-white">
                   <Card.Img 
                     variant="top" 
-                    src={getImageUrl(movie.imageUrl)} 
+                    src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
                     alt={movie.title}
                     className="search-movie-img"
                   />
@@ -117,7 +117,7 @@ const MovieSearch = () => {
                   <Row>
                     <Col md={4}>
                       <img 
-                        src={getImageUrl(movie.imageUrl)} 
+                        src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
                         alt={movie.title}
                         className="img-fluid mb-2"
                       />

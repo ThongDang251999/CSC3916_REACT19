@@ -329,3 +329,53 @@ body, html {
     max-height: 350px;
   }
 }
+
+/* Movie Detail Page - matching the screenshot */
+.movie-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #1a1a1a;
+  color: #f5f5f5;
+}
+
+.poster-frame {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 5px;
+  background-color: #000;
+  border: 2px solid #333;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.poster-frame img {
+  max-height: 500px;
+  max-width: 100%;
+}
+
+.cast-info {
+  color: #bbb;
+  margin: 10px 0 20px;
+}
+
+.review-item {
+  background-color: #2a2a2a;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  padding: 8px 12px;
+}
+
+.review-username {
+  color: #aaa;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.review-text {
+  color: #ddd;
+  flex-grow: 1;
+}
+
+.review-rating {
+  color: #ddd;
+  font-weight: bold;
+}

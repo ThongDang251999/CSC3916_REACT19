@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovie } from '../actions/movieActions';
-import { Card, Image, Row, Col, Alert } from 'react-bootstrap';
+import { Card, Image, Row, Col, Alert, Container } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
 import ReviewForm from './reviewform';
 
@@ -56,85 +56,63 @@ const MovieDetail = () => {
   const hasReviews = selectedMovie.reviews && selectedMovie.reviews.length > 0;
   
   return (
-    <div className="movie-detail-container">
-      <div className="movie-header d-flex flex-column flex-md-row mb-4">
-        <div className="movie-poster-section text-center mb-4 mb-md-0">
+    <Container className="py-4 movie-detail-container">
+      <div className="text-center mb-4">
+        <div className="poster-frame mb-3">
           <Image 
             src={selectedMovie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
             alt={selectedMovie.title}
             className="movie-poster-img"
+            style={{ maxHeight: '500px', border: '2px solid #333', padding: '4px', background: '#000' }}
           />
         </div>
-
-        <div className="movie-info-card p-4 ms-md-4 flex-grow-1 bg-dark text-white">
-          <h2 className="mb-3">{selectedMovie.title} {selectedMovie.releaseDate && `(${selectedMovie.releaseDate})`}</h2>
-          
-          {selectedMovie.genre && (
-            <p><strong>Genre:</strong> {selectedMovie.genre}</p>
-          )}
-          
-          <div className="text-center mb-3">
-            <div className="movie-rating">
-              <BsStarFill className="text-warning me-1" /> 
-              <span className="rating-value">
-                {selectedMovie.avgRating 
-                  ? Number(selectedMovie.avgRating).toFixed(1) 
-                  : 'No ratings'}
-              </span>
-            </div>
-          </div>
-          
-          <div className="movie-cast mb-4">
-            <h4 className="mb-3">Cast</h4>
-            {selectedMovie.actors && selectedMovie.actors.length > 0 ? (
-              <Row xs={1} md={2} className="g-3">
-                {selectedMovie.actors.map((actor, i) => (
-                  <Col key={i}>
-                    <Card className="bg-dark text-white border-secondary">
-                      <Card.Body>
-                        <strong>{actor.actorName}</strong> as {actor.characterName}
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            ) : (
-              <div>No cast information available</div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="reviews-section bg-dark text-white p-4 mb-4">
-        <h3 className="text-center mb-3">Reviews</h3>
         
-        {hasReviews ? (
-          <div className="reviews-list">
-            {selectedMovie.reviews.map((review, i) => (
-              <div key={i} className="review-item p-3 mb-3">
-                <div className="d-flex justify-content-between">
-                  <div className="reviewer-name">{review.username || 'Anonymous'}</div>
-                  <div className="review-rating d-flex align-items-center">
-                    <BsStarFill className="text-warning me-1" /> {review.rating}
-                  </div>
-                </div>
-                <div className="review-text mt-2">{review.review || 'No comment'}</div>
+        <h2 className="mb-3 text-center">{selectedMovie.title}</h2>
+        
+        {selectedMovie.actors && selectedMovie.actors.length > 0 && (
+          <div className="cast-info text-center mb-3">
+            {selectedMovie.actors.map((actor, i) => (
+              <div key={i} className="mb-2">
+                <strong>{actor.actorName}</strong> {actor.characterName && `${actor.characterName}`}
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-center">No reviews yet. Be the first to review!</p>
         )}
         
-        {loggedIn ? (
-          <ReviewForm movieId={movieId} onReviewAdded={handleReviewAdded} />
-        ) : (
-          <Alert variant="info" className="mt-3">
-            Please log in to submit a review.
-          </Alert>
-        )}
+        <div className="rating d-flex justify-content-center align-items-center mb-4">
+          <BsStarFill className="text-warning me-2" /> 
+          <span style={{ fontSize: '1.2rem' }}>
+            {selectedMovie.avgRating 
+              ? Number(selectedMovie.avgRating).toFixed(0) 
+              : '0'}
+          </span>
+        </div>
       </div>
-    </div>
+
+      {hasReviews && (
+        <div className="reviews-section bg-dark text-white p-3 mb-4">
+          <div className="reviews-list">
+            {selectedMovie.reviews.map((review, i) => (
+              <div key={i} className="review-item p-2 mb-2 d-flex">
+                <div className="review-username me-2">
+                  <strong>{review.username || 'Anonymous'}</strong>
+                </div>
+                <div className="review-text">
+                  {review.review || 'No comment'}
+                </div>
+                <div className="ms-auto review-rating d-flex align-items-center">
+                  <span>{review.rating}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {loggedIn && (
+        <ReviewForm movieId={movieId} onReviewAdded={handleReviewAdded} />
+      )}
+    </Container>
   );
 };
 

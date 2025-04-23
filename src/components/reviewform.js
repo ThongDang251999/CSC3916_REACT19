@@ -5,7 +5,7 @@ import { submitReview } from '../actions/movieActions';
 import { BsStarFill } from 'react-icons/bs';
 
 const ReviewForm = ({ movieId, onReviewAdded }) => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState('');
@@ -44,7 +44,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
       .then(() => {
         console.log("Review submitted successfully");
         setSuccess(true);
-        setRating(0);
+        setRating(5);
         setComment('');
         setValidated(false);
         setSubmitting(false);
@@ -67,63 +67,54 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
   };
 
   return (
-    <div className="review-form-container mt-4 p-4 bg-dark border-top border-secondary">
-      <h4 className="mb-4 text-center">Add Your Review</h4>
+    <div className="review-form-container bg-dark mb-4">
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">Your review has been submitted!</Alert>}
       
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Row>
-          <Col md={4}>
-            <Form.Group className="mb-3 text-center">
-              <Form.Label>Your Rating</Form.Label>
-              <div className="d-flex justify-content-center align-items-center">
-                <Form.Control
-                  type="number"
-                  min="1"
-                  max="5"
-                  value={rating}
-                  onChange={(e) => setRating(e.target.value)}
-                  required
-                  className="me-2 rating-input"
-                  style={{ width: '70px', textAlign: 'center' }}
-                />
-                <BsStarFill className="text-warning" size={20} />
-              </div>
-              <Form.Control.Feedback type="invalid">
-                Please provide a rating between 1 and 5.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          
-          <Col md={8}>
-            <Form.Group className="mb-3">
-              <Form.Label>Your Review</Form.Label>
+        <Row className="g-2">
+          <Col xs={12}>
+            <Form.Group className="mb-2">
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={2}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 required
-                placeholder="What did you think about this movie?"
+                placeholder="Add your review here..."
+                className="bg-dark text-light border-secondary"
               />
-              <Form.Control.Feedback type="invalid">
-                Please provide your thoughts on the movie.
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
+          
+          <Col xs={6}>
+            <Form.Group className="mb-2">
+              <Form.Select
+                value={rating}
+                onChange={(e) => setRating(parseInt(e.target.value))}
+                required
+                className="bg-dark text-light border-secondary"
+              >
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          
+          <Col xs={6}>
+            <Button 
+              variant="primary" 
+              type="submit" 
+              className="w-100"
+              disabled={submitting}
+            >
+              {submitting ? 'Submitting...' : 'Submit Review'}
+            </Button>
+          </Col>
         </Row>
-        
-        <div className="d-flex justify-content-center mt-3">
-          <Button 
-            variant="primary" 
-            type="submit" 
-            className="px-4"
-            disabled={submitting}
-          >
-            {submitting ? 'Submitting...' : 'Submit Review'}
-          </Button>
-        </div>
       </Form>
     </div>
   );
