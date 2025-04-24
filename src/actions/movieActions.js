@@ -123,7 +123,27 @@ export function fetchMovies() {
             console.log('Movies list response headers:', [...response.headers.entries()]);
             if (!response.ok) {
                 console.error('Error response:', response);
-                throw new Error(response.statusText || `Failed to fetch movies (Status: ${response.status})`);
+                return response.text().then(text => {
+                    console.error('Error response body:', text);
+                    let errorMessage = `Failed to fetch movies (Status: ${response.status})`;
+                    let errorDetails = '';
+                    
+                    try {
+                        const errorJson = JSON.parse(text);
+                        if (errorJson.message || errorJson.error) {
+                            errorMessage = errorJson.message || errorJson.error;
+                            errorDetails = errorJson.details || '';
+                        }
+                    } catch (e) {
+                        // If parsing fails, use the text as the error message if it exists
+                        if (text) errorMessage = text;
+                    }
+                    
+                    const error = new Error(errorMessage);
+                    error.status = response.status;
+                    error.errorDetails = errorDetails;
+                    throw error;
+                });
             }
             return response.json()
         }).then((res) => {
@@ -134,7 +154,13 @@ export function fetchMovies() {
         }).catch((e) => {
             console.error('Error fetching movies (details):', e);
             console.error('Error message:', e.message);
-            dispatch(fetchMoviesError(e.message));
+            console.error('Error status:', e.status);
+            console.error('Error details:', e.errorDetails);
+            dispatch(fetchMoviesError({
+                message: e.message,
+                status: e.status,
+                details: e.errorDetails
+            }));
             throw e;
         });
     }
@@ -180,6 +206,9 @@ export function searchMovies(searchTerm, searchType = 'title') {
 
 export function submitReview(reviewData) {
     console.log('Submitting review:', reviewData);
+    console.log('API URL for review submission:', `${env.REACT_APP_API_URL}/reviews`);
+    console.log('Token for auth:', localStorage.getItem('token') ? 'Token exists' : 'No token found');
+    
     return dispatch => {
         return fetch(`${env.REACT_APP_API_URL}/reviews`, {
             method: 'POST',
@@ -195,18 +224,31 @@ export function submitReview(reviewData) {
             }),
             mode: 'cors'
         }).then((response) => {
-            console.log('Review submission response:', response.status);
+            console.log('Review submission response status:', response.status);
+            console.log('Review submission response headers:', [...response.headers.entries()]);
+            
             if (!response.ok) {
-                throw new Error(response.statusText || 'Failed to submit review');
+                return response.text().then(text => {
+                    console.error('Error response body:', text);
+                    let errorMessage;
+                    try {
+                        const errorJson = JSON.parse(text);
+                        errorMessage = errorJson.message || errorJson.error || `HTTP Error ${response.status}`;
+                    } catch (e) {
+                        errorMessage = text || `HTTP Error ${response.status}`;
+                    }
+                    throw new Error(errorMessage);
+                });
             }
-            return response.json()
+            return response.json();
         }).then((res) => {
             console.log('Review submitted successfully:', res);
             dispatch(reviewSubmitted());
             // We don't need to fetch the movie again here as we'll use the callback in the component
             return res;
         }).catch((e) => {
-            console.error('Error submitting review:', e);
+            console.error('Error submitting review (details):', e);
+            console.error('Error message:', e.message);
             throw e;
         });
     }

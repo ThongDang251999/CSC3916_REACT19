@@ -5,6 +5,7 @@ import { fetchMovie } from '../actions/movieActions';
 import { Card, Image, Row, Col, Alert, Container } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
 import ReviewForm from './reviewform';
+import { Link } from 'react-router-dom';
 
 const MovieDetail = () => {
   const dispatch = useDispatch();
@@ -109,6 +110,11 @@ const MovieDetail = () => {
             alt={movieData.title}
             className="movie-poster-img"
             style={{ maxHeight: '500px', border: '2px solid #333', padding: '4px', background: '#000' }}
+            onError={(e) => {
+              console.error(`Failed to load image: ${movieData.imageUrl}`);
+              e.target.onerror = null;
+              e.target.src = 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg';
+            }}
           />
           <div className="mt-2 small">
             <p>Image URL: {movieData.imageUrl || 'No image URL'}</p>
@@ -158,7 +164,10 @@ const MovieDetail = () => {
       )}
       
       {loggedIn && (
-        <ReviewForm movieId={movieId} onReviewAdded={handleReviewAdded} />
+        <ReviewForm 
+          movieId={movieId === 'test-movie' ? 'test-movie' : movieData._id} 
+          onReviewAdded={handleReviewAdded}
+        />
       )}
     </Container>
   );
