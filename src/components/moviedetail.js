@@ -20,13 +20,13 @@ const MovieDetail = () => {
   // Test movie data for when API doesn't return data
   const testMovie = {
     _id: '65ffaf0cbb45d068a11edd6a',
-    title: 'Guardians of the Galaxy (Test)',
+    title: 'Guardians of the Galaxy',
     releaseDate: '2014',
     genre: 'Action/Sci-Fi',
-    avgRating: 4.5,
+    avgRating: 5,
     imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg',
     actors: [
-      { actorName: 'Chris Pratt', characterName: 'Star-Lord' },
+      { actorName: 'Chris Pratt', characterName: 'Peter Quill' },
       { actorName: 'Zoe Saldana', characterName: 'Gamora' },
       { actorName: 'Vin Diesel', characterName: 'Groot' }
     ],
@@ -70,22 +70,6 @@ const MovieDetail = () => {
     }
   };
 
-  // Test image section to check if images work
-  const testImageSection = (
-    <div className="mb-4 p-3 bg-dark">
-      <h4 className="text-center mb-3">Test Image</h4>
-      <div className="text-center">
-        <img 
-          src="https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg" 
-          alt="Test Guardians of the Galaxy" 
-          className="img-fluid"
-          style={{ maxHeight: "300px" }}
-        />
-        <p className="mt-2">Direct hardcoded test image URL</p>
-      </div>
-    </div>
-  );
-
   if (!loggedIn) {
     // Redirect to login if not logged in
     return (
@@ -103,7 +87,6 @@ const MovieDetail = () => {
     return (
       <div>
         <Alert variant="danger" className="text-center p-5">Error: {error}</Alert>
-        {testImageSection}
       </div>
     );
   }
@@ -116,9 +99,7 @@ const MovieDetail = () => {
   
   return (
     <Container className="py-4 movie-detail-container">
-      {movieId !== '65ffaf0cbb45d068a11edd6a' && testImageSection}
-      
-      <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '8px' }}>
+      <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '0px', maxWidth: '420px', margin: '0 auto' }}>
         <div className="poster-frame mb-3">
           <Image 
             src={movieData.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
@@ -126,8 +107,9 @@ const MovieDetail = () => {
             className="movie-poster-img"
             style={{ 
               maxHeight: '500px',
-              border: '2px solid white', 
-              padding: '4px', 
+              border: '2px solid white',
+              borderRadius: '0px',
+              padding: '0px', 
               background: 'white',
             }}
             onError={(e) => {
@@ -138,36 +120,36 @@ const MovieDetail = () => {
           />
         </div>
         
-        <h4 className="text-center" style={{ marginTop: '15px', marginBottom: '15px', fontWeight: 'normal' }}>{movieData.title}</h4>
+        <h4 className="text-center" style={{ marginTop: '10px', marginBottom: '15px', fontWeight: 'normal', fontSize: '16px' }}>{movieData.title}</h4>
         
         {movieData.actors && movieData.actors.length > 0 && (
-          <div className="cast-info text-center" style={{ marginBottom: '20px', lineHeight: '1.5' }}>
+          <div className="cast-info text-center" style={{ marginBottom: '15px', lineHeight: '1.2' }}>
             {movieData.actors.map((actor, i) => (
-              <div key={i} style={{ marginBottom: '4px', color: '#333' }}>
+              <div key={i} style={{ marginBottom: '4px', color: '#333', fontSize: '14px' }}>
                 <strong>{actor.actorName}</strong> {actor.characterName}
               </div>
             ))}
           </div>
         )}
         
-        <div className="rating d-flex justify-content-center align-items-center" style={{ marginBottom: '10px' }}>
-          <BsStarFill className="text-warning me-2" style={{ fontSize: '16px' }} /> 
-          <span style={{ fontSize: '16px' }}>{movieData.avgRating ? Number(movieData.avgRating).toFixed(0) : '0'}</span>
+        <div className="rating d-flex justify-content-center align-items-center" style={{ marginBottom: '5px' }}>
+          <BsStarFill className="text-warning me-1" style={{ fontSize: '14px' }} /> 
+          <span style={{ fontSize: '14px' }}>{movieData.avgRating ? Number(movieData.avgRating).toFixed(0) : '0'}</span>
         </div>
       </div>
 
       {hasReviews && (
-        <div className="reviews-section bg-dark text-white p-3 mb-0">
+        <div className="reviews-section bg-dark text-white p-3 mb-0" style={{ maxWidth: '420px', margin: '0 auto' }}>
           <div className="reviews-list">
             {movieData.reviews.map((review, i) => (
               <div key={i} className="review-item py-1 px-2 d-flex justify-content-between" style={{ borderBottom: '1px solid #444' }}>
-                <div className="review-username" style={{ width: '120px', textAlign: 'left' }}>
+                <div className="review-username" style={{ width: '120px', textAlign: 'left', fontSize: '14px' }}>
                   <span>{review.username || 'Anonymous'}</span>
                 </div>
-                <div className="review-text flex-grow-1" style={{ textAlign: 'left', paddingLeft: '10px' }}>
+                <div className="review-text flex-grow-1" style={{ textAlign: 'left', paddingLeft: '10px', fontSize: '14px' }}>
                   {review.review || 'No comment'}
                 </div>
-                <div className="review-rating" style={{ minWidth: '20px', textAlign: 'right' }}>
+                <div className="review-rating" style={{ minWidth: '20px', textAlign: 'right', fontSize: '14px' }}>
                   <span>{review.rating}</span>
                 </div>
               </div>

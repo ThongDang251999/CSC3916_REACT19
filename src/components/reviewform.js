@@ -102,7 +102,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
   };
 
   return (
-    <div className="review-form-container bg-dark" style={{ marginTop: 0 }}>
+    <div className="review-form-container bg-dark" style={{ marginTop: 0, maxWidth: '420px', margin: '0 auto' }}>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">Your review has been submitted!</Alert>}
       
@@ -118,6 +118,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
                 required
                 placeholder="Add your review here..."
                 className="bg-dark text-light border-secondary"
+                style={{ fontSize: '14px' }}
               />
             </Form.Group>
           </Col>
@@ -129,6 +130,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
                 onChange={(e) => setRating(parseInt(e.target.value))}
                 required
                 className="bg-dark text-light border-secondary"
+                style={{ fontSize: '14px' }}
               >
                 <option value="5">5 Stars</option>
                 <option value="4">4 Stars</option>
@@ -145,6 +147,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
               type="submit" 
               className="w-100"
               disabled={submitting}
+              style={{ fontSize: '14px' }}
             >
               {submitting ? 'Submitting...' : 'Submit Review'}
             </Button>

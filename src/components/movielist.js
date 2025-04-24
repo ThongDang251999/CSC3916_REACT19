@@ -59,10 +59,10 @@ function MovieList() {
     // Test movie data for when API doesn't return data
     const testMovies = [{
         _id: '65ffaf0cbb45d068a11edd6a',  // Changed from 'test-movie'
-        title: 'Guardians of the Galaxy (Test)',
+        title: 'Guardians of the Galaxy',
         releaseDate: '2014',
         genre: 'Action/Sci-Fi',
-        avgRating: 4.5,
+        avgRating: 5,
         imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'
     }];
 
