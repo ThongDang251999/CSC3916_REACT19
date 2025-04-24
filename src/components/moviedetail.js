@@ -118,19 +118,17 @@ const MovieDetail = () => {
     <Container className="py-4 movie-detail-container">
       {movieId !== '65ffaf0cbb45d068a11edd6a' && testImageSection}
       
-      <div className="text-center mb-4">
+      <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '8px' }}>
         <div className="poster-frame mb-3">
           <Image 
             src={movieData.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
             alt={movieData.title}
             className="movie-poster-img"
             style={{ 
-              maxHeight: '500px', 
-              border: '2px solid #333', 
-              padding: '8px', 
-              background: '#000',
-              boxShadow: '0 10px 20px rgba(0, 0, 0, 0.5)',
-              borderRadius: '4px'
+              maxHeight: '500px',
+              border: '2px solid white', 
+              padding: '4px', 
+              background: 'white',
             }}
             onError={(e) => {
               console.error(`Failed to load image: ${movieData.imageUrl}`);
@@ -140,42 +138,36 @@ const MovieDetail = () => {
           />
         </div>
         
-        <h2 className="mb-3 text-center" style={{ fontSize: '2rem', fontWeight: 'bold' }}>{movieData.title}</h2>
+        <h4 className="text-center" style={{ marginTop: '15px', marginBottom: '15px', fontWeight: 'normal' }}>{movieData.title}</h4>
         
         {movieData.actors && movieData.actors.length > 0 && (
-          <div className="cast-info text-center mb-3">
+          <div className="cast-info text-center" style={{ marginBottom: '20px', lineHeight: '1.5' }}>
             {movieData.actors.map((actor, i) => (
-              <div key={i} className="mb-2" style={{ fontSize: '1.1rem' }}>
-                <strong>{actor.actorName}</strong> {actor.characterName && ` as ${actor.characterName}`}
+              <div key={i} style={{ marginBottom: '4px', color: '#333' }}>
+                <strong>{actor.actorName}</strong> {actor.characterName && actor.characterName}
               </div>
             ))}
           </div>
         )}
         
-        <div className="rating d-flex justify-content-center align-items-center mb-4">
-          <BsStarFill className="text-warning me-2" style={{ fontSize: '1.5rem' }} /> 
-          <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-            {movieData.avgRating 
-              ? Number(movieData.avgRating).toFixed(1) 
-              : '0'}
-          </span>
+        <div className="rating d-flex justify-content-center align-items-center" style={{ marginBottom: '10px' }}>
+          <BsStarFill className="text-warning me-2" style={{ fontSize: '16px' }} /> 
+          <span style={{ fontSize: '16px' }}>{movieData.avgRating ? Number(movieData.avgRating).toFixed(0) : '0'}</span>
         </div>
       </div>
 
       {hasReviews && (
-        <div className="reviews-section bg-dark text-white p-4 mb-4" style={{ borderRadius: '8px', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.3)' }}>
-          <h4 className="mb-3">Reviews</h4>
+        <div className="reviews-section bg-dark text-white p-3 mb-0">
           <div className="reviews-list">
             {movieData.reviews.map((review, i) => (
-              <div key={i} className="review-item p-3 mb-3 d-flex" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
-                <div className="review-username me-3">
-                  <strong>{review.username || 'Anonymous'}</strong>
+              <div key={i} className="review-item py-1 px-2 d-flex justify-content-between" style={{ borderBottom: '1px solid #444' }}>
+                <div className="review-username" style={{ width: '120px', textAlign: 'left' }}>
+                  <span>{review.username || 'Anonymous'}</span>
                 </div>
-                <div className="review-text">
+                <div className="review-text flex-grow-1" style={{ textAlign: 'left', paddingLeft: '10px' }}>
                   {review.review || 'No comment'}
                 </div>
-                <div className="ms-auto review-rating d-flex align-items-center">
-                  <BsStarFill className="text-warning me-1" />
+                <div className="review-rating" style={{ minWidth: '20px', textAlign: 'right' }}>
                   <span>{review.rating}</span>
                 </div>
               </div>

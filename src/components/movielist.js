@@ -14,7 +14,22 @@ function MovieList() {
 
     // Memoize the movies array
     const memoizedMovies = useMemo(() => {
-        return movies;
+        // Remove duplicate movies based on title
+        if (!movies) return [];
+        
+        // Use a Map to keep only one movie with each title
+        const uniqueMovies = new Map();
+        movies.forEach(movie => {
+            // Only add the movie if we don't already have one with this title
+            // Or if this movie has a higher rating than the existing one
+            const existingMovie = uniqueMovies.get(movie.title);
+            if (!existingMovie || (movie.avgRating > existingMovie.avgRating)) {
+                uniqueMovies.set(movie.title, movie);
+            }
+        });
+        
+        // Convert the Map values back to an array
+        return Array.from(uniqueMovies.values());
     }, [movies]);
 
     useEffect(() => {

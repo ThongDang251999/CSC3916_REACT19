@@ -102,59 +102,49 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
   };
 
   return (
-    <div className="review-form-container bg-dark mb-4 p-4" style={{ borderRadius: '8px', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.3)' }}>
-      <h4 className="mb-3">Add Your Review</h4>
-      
+    <div className="review-form-container bg-dark" style={{ marginTop: 0 }}>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">Your review has been submitted!</Alert>}
       
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Row className="g-3">
+        <Row className="g-2">
           <Col xs={12}>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-2">
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={2}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 required
                 placeholder="Add your review here..."
                 className="bg-dark text-light border-secondary"
-                style={{ resize: 'none', fontSize: '1rem' }}
               />
             </Form.Group>
           </Col>
           
-          <Col xs={6} md={8}>
-            <Form.Group className="mb-3">
+          <Col xs={6}>
+            <Form.Group className="mb-2">
               <Form.Select
                 value={rating}
                 onChange={(e) => setRating(parseInt(e.target.value))}
                 required
                 className="bg-dark text-light border-secondary"
-                style={{ height: '100%' }}
               >
-                <option value="5">5 Stars ★★★★★</option>
-                <option value="4">4 Stars ★★★★☆</option>
-                <option value="3">3 Stars ★★★☆☆</option>
-                <option value="2">2 Stars ★★☆☆☆</option>
-                <option value="1">1 Star ★☆☆☆☆</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
               </Form.Select>
             </Form.Group>
           </Col>
           
-          <Col xs={6} md={4}>
+          <Col xs={6}>
             <Button 
               variant="primary" 
               type="submit" 
-              className="w-100 h-100"
+              className="w-100"
               disabled={submitting}
-              style={{ 
-                background: '#e50914', 
-                borderColor: '#e50914',
-                fontWeight: 'bold',
-                padding: '0.75rem'
-              }}
             >
               {submitting ? 'Submitting...' : 'Submit Review'}
             </Button>
