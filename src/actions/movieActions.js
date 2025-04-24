@@ -106,6 +106,7 @@ export function fetchMovie(movieId) {
 
 export function fetchMovies() {
     console.log('Fetching movies list with reviews=true');
+    console.log('API URL:', env.REACT_APP_API_URL);
     return dispatch => {
         dispatch(fetchMoviesRequest());
         
@@ -118,18 +119,21 @@ export function fetchMovies() {
             },
             mode: 'cors'
         }).then((response) => {
-            console.log('Movies list response:', response.status);
+            console.log('Movies list response status:', response.status);
+            console.log('Movies list response headers:', [...response.headers.entries()]);
             if (!response.ok) {
-                throw new Error(response.statusText || 'Failed to fetch movies');
+                console.error('Error response:', response);
+                throw new Error(response.statusText || `Failed to fetch movies (Status: ${response.status})`);
             }
             return response.json()
         }).then((res) => {
-            console.log('Movies received:', res);
-            console.log('First movie image URL:', res.length > 0 ? res[0].imageUrl : 'No movies returned');
+            console.log('Movies received (count):', res ? res.length : 0);
+            console.log('Movies data sample:', res && res.length > 0 ? res[0] : 'No movies returned');
             dispatch(moviesFetched(res));
             return res;
         }).catch((e) => {
-            console.error('Error fetching movies:', e);
+            console.error('Error fetching movies (details):', e);
+            console.error('Error message:', e.message);
             dispatch(fetchMoviesError(e.message));
             throw e;
         });

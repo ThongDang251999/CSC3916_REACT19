@@ -15,11 +15,34 @@ const MovieDetail = () => {
   const error = useSelector(state => state.movie.error);
   const loggedIn = useSelector(state => state.auth.loggedIn);
   const [refreshKey, setRefreshKey] = useState(0);
+  
+  // Test movie data for when API doesn't return data
+  const testMovie = {
+    _id: 'test-movie',
+    title: 'Guardians of the Galaxy (Test)',
+    releaseDate: '2014',
+    genre: 'Action/Sci-Fi',
+    avgRating: 4.5,
+    imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg',
+    actors: [
+      { actorName: 'Chris Pratt', characterName: 'Star-Lord' },
+      { actorName: 'Zoe Saldana', characterName: 'Gamora' },
+      { actorName: 'Vin Diesel', characterName: 'Groot' }
+    ],
+    reviews: [
+      { username: 'starLord55', rating: 5, review: 'Great movie' },
+      { username: 'gamora55', rating: 5, review: 'Great movie' },
+      { username: 'batman', rating: 5, review: 'great movie' }
+    ]
+  };
 
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
     console.log("MovieDetail component - movieId:", movieId);
-    if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
+    if (movieId === 'test-movie') {
+      console.log("Using test movie data instead of fetching from API");
+      // No need to fetch from API for test movie
+    } else if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
       console.log("Fetching movie details in MovieDetail component");
       dispatch(fetchMovie(movieId));
       if (refreshKey > 0) setRefreshKey(0);
@@ -30,15 +53,6 @@ const MovieDetail = () => {
     // Trigger a refresh of movie data after review is added
     setRefreshKey(prevKey => prevKey + 1);
   };
-
-  if (!loggedIn) {
-    // Redirect to login if not logged in
-    return (
-      <Alert variant="warning" className="text-center p-5">
-        Please <Alert.Link onClick={() => navigate('/signin')}>log in</Alert.Link> to view movie details.
-      </Alert>
-    );
-  }
 
   // Test image section to check if images work
   const testImageSection = (
@@ -56,43 +70,56 @@ const MovieDetail = () => {
     </div>
   );
 
-  if (loading) {
+  if (!loggedIn) {
+    // Redirect to login if not logged in
+    return (
+      <Alert variant="warning" className="text-center p-5">
+        Please <Alert.Link onClick={() => navigate('/signin')}>log in</Alert.Link> to view movie details.
+      </Alert>
+    );
+  }
+
+  if (loading && movieId !== 'test-movie') {
     return <div className="text-center p-5">Loading movie details...</div>;
   }
 
-  if (error) {
-    return <Alert variant="danger" className="text-center p-5">Error: {error}</Alert>;
+  if (error && movieId !== 'test-movie') {
+    return (
+      <div>
+        <Alert variant="danger" className="text-center p-5">Error: {error}</Alert>
+        {testImageSection}
+      </div>
+    );
   }
 
-  if (!selectedMovie) {
-    return <Alert variant="warning" className="text-center p-5">No movie data available. Please try again.</Alert>;
-  }
+  // Use test movie data if we're viewing the test movie or if no movie data is available
+  const movieData = (movieId === 'test-movie' || !selectedMovie) ? testMovie : selectedMovie;
 
   // Check if reviews exist
-  const hasReviews = selectedMovie.reviews && selectedMovie.reviews.length > 0;
+  const hasReviews = movieData.reviews && movieData.reviews.length > 0;
   
   return (
     <Container className="py-4 movie-detail-container">
-      {testImageSection}
+      {movieId !== 'test-movie' && testImageSection}
       
       <div className="text-center mb-4">
         <div className="poster-frame mb-3">
           <Image 
-            src={selectedMovie.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
-            alt={selectedMovie.title}
+            src={movieData.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
+            alt={movieData.title}
             className="movie-poster-img"
             style={{ maxHeight: '500px', border: '2px solid #333', padding: '4px', background: '#000' }}
           />
           <div className="mt-2 small">
-            <p>Image URL: {selectedMovie.imageUrl || 'No image URL'}</p>
+            <p>Image URL: {movieData.imageUrl || 'No image URL'}</p>
           </div>
         </div>
         
-        <h2 className="mb-3 text-center">{selectedMovie.title}</h2>
+        <h2 className="mb-3 text-center">{movieData.title}</h2>
         
-        {selectedMovie.actors && selectedMovie.actors.length > 0 && (
+        {movieData.actors && movieData.actors.length > 0 && (
           <div className="cast-info text-center mb-3">
-            {selectedMovie.actors.map((actor, i) => (
+            {movieData.actors.map((actor, i) => (
               <div key={i} className="mb-2">
                 <strong>{actor.actorName}</strong> {actor.characterName && `${actor.characterName}`}
               </div>
@@ -103,8 +130,8 @@ const MovieDetail = () => {
         <div className="rating d-flex justify-content-center align-items-center mb-4">
           <BsStarFill className="text-warning me-2" /> 
           <span style={{ fontSize: '1.2rem' }}>
-            {selectedMovie.avgRating 
-              ? Number(selectedMovie.avgRating).toFixed(0) 
+            {movieData.avgRating 
+              ? Number(movieData.avgRating).toFixed(0) 
               : '0'}
           </span>
         </div>
@@ -113,7 +140,7 @@ const MovieDetail = () => {
       {hasReviews && (
         <div className="reviews-section bg-dark text-white p-3 mb-4">
           <div className="reviews-list">
-            {selectedMovie.reviews.map((review, i) => (
+            {movieData.reviews.map((review, i) => (
               <div key={i} className="review-item p-2 mb-2 d-flex">
                 <div className="review-username me-2">
                   <strong>{review.username || 'Anonymous'}</strong>

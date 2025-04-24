@@ -41,6 +41,20 @@ function MovieList() {
         return isValidUrl(url) ? url : url;
     };
 
+    // Test movie to display when no movies are available from API
+    const testMovie = {
+        _id: 'test-movie',
+        title: 'Guardians of the Galaxy (Test)',
+        releaseDate: '2014',
+        genre: 'Action/Sci-Fi',
+        avgRating: 4.5,
+        imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg',
+        actors: [
+            { actorName: 'Chris Pratt', characterName: 'Star-Lord' },
+            { actorName: 'Zoe Saldana', characterName: 'Gamora' }
+        ]
+    };
+
     if (!loggedIn) {
         return (
             <Alert variant="warning" className="text-center p-5">
@@ -53,12 +67,86 @@ function MovieList() {
         return <div className="text-center p-5">Loading movies...</div>;
     }
 
+    // Display error and the test movie card
     if (error) {
-        return <Alert variant="danger" className="text-center p-5">Error: {error}</Alert>;
+        return (
+            <div>
+                <Alert variant="danger" className="text-center p-5">Error loading movies: {error}</Alert>
+                <div className="movie-list-container py-4">
+                    <h2 className="text-center mb-4">Test Movie (Local Only)</h2>
+                    <Row xs={1} md={2} lg={3} className="g-4">
+                        <Col>
+                            <Card 
+                                className="movie-card h-100 bg-dark text-white" 
+                                as={Link} 
+                                to={`/movie/test-movie`}
+                                onClick={() => handleClick(testMovie)}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <div className="movie-card-img-container">
+                                    <Card.Img 
+                                        variant="top" 
+                                        src={testMovie.imageUrl} 
+                                        alt={testMovie.title}
+                                        className="movie-card-img"
+                                    />
+                                </div>
+                                <Card.Body className="text-center">
+                                    <Card.Title>{testMovie.title}</Card.Title>
+                                    <Card.Text className="d-flex justify-content-between align-items-center">
+                                        <small>{testMovie.releaseDate}</small>
+                                        <span className="d-flex align-items-center">
+                                            <BsStarFill className="text-warning me-1" /> 
+                                            {testMovie.avgRating ? Number(testMovie.avgRating).toFixed(1) : 'N/A'}
+                                        </span>
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+        );
     }
 
+    // If no movies from API, show test movie
     if (!memoizedMovies || memoizedMovies.length === 0) {
-        return <div className="text-center p-5">No movies available.</div>;
+        return (
+            <div className="movie-list-container py-4">
+                <h2 className="text-center mb-4">Test Movie (Local Only)</h2>
+                <p className="text-center text-muted mb-4">No movies found in API, showing test movie</p>
+                <Row xs={1} md={2} lg={3} className="g-4">
+                    <Col>
+                        <Card 
+                            className="movie-card h-100 bg-dark text-white" 
+                            as={Link} 
+                            to={`/movie/test-movie`}
+                            onClick={() => handleClick(testMovie)}
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <div className="movie-card-img-container">
+                                <Card.Img 
+                                    variant="top" 
+                                    src={testMovie.imageUrl} 
+                                    alt={testMovie.title}
+                                    className="movie-card-img"
+                                />
+                            </div>
+                            <Card.Body className="text-center">
+                                <Card.Title>{testMovie.title}</Card.Title>
+                                <Card.Text className="d-flex justify-content-between align-items-center">
+                                    <small>{testMovie.releaseDate}</small>
+                                    <span className="d-flex align-items-center">
+                                        <BsStarFill className="text-warning me-1" /> 
+                                        {testMovie.avgRating ? Number(testMovie.avgRating).toFixed(1) : 'N/A'}
+                                    </span>
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        );
     }
 
     return (
