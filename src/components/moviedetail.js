@@ -24,7 +24,7 @@ const MovieDetail = () => {
     releaseDate: '2014',
     genre: 'Action/Sci-Fi',
     avgRating: 5,
-    imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg',
+    imageUrl: 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg',
     actors: [
       { actorName: 'Chris Pratt', characterName: 'Peter Quill' },
       { actorName: 'Zoe Saldana', characterName: 'Gamora' },
@@ -116,7 +116,7 @@ const MovieDetail = () => {
             onError={(e) => {
               console.error(`Failed to load image: ${movieData.imageUrl}`);
               e.target.onerror = null;
-              e.target.src = 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg';
+              e.target.src = 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg';
             }}
           />
         </div>

@@ -63,7 +63,7 @@ function MovieList() {
         releaseDate: '2014',
         genre: 'Action/Sci-Fi',
         avgRating: 5,
-        imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg'
+        imageUrl: 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg'
     }];
 
     if (!loggedIn) {
@@ -103,7 +103,7 @@ function MovieList() {
                                         onError={(e) => {
                                             console.error(`Failed to load image: ${testMovies[0].imageUrl}`);
                                             e.target.onerror = null;
-                                            e.target.src = 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg';
+                                            e.target.src = 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg';
                                         }}
                                     />
                                 </div>
@@ -149,7 +149,7 @@ function MovieList() {
                                     onError={(e) => {
                                         console.error(`Failed to load image: ${testMovies[0].imageUrl}`);
                                         e.target.onerror = null;
-                                        e.target.src = 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg';
+                                        e.target.src = 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg';
                                     }}
                                 />
                             </div>
