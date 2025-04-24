@@ -19,7 +19,7 @@ const MovieDetail = () => {
   
   // Test movie data for when API doesn't return data
   const testMovie = {
-    _id: 'test-movie',
+    _id: '65ffaf0cbb45d068a11edd6a',
     title: 'Guardians of the Galaxy (Test)',
     releaseDate: '2014',
     genre: 'Action/Sci-Fi',
@@ -40,7 +40,7 @@ const MovieDetail = () => {
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
     console.log("MovieDetail component - movieId:", movieId);
-    if (movieId === 'test-movie') {
+    if (movieId === '65ffaf0cbb45d068a11edd6a') {
       console.log("Using test movie data instead of fetching from API");
       // No need to fetch from API for test movie
     } else if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
@@ -80,11 +80,11 @@ const MovieDetail = () => {
     );
   }
 
-  if (loading && movieId !== 'test-movie') {
+  if (loading && movieId !== '65ffaf0cbb45d068a11edd6a') {
     return <div className="text-center p-5">Loading movie details...</div>;
   }
 
-  if (error && movieId !== 'test-movie') {
+  if (error && movieId !== '65ffaf0cbb45d068a11edd6a') {
     return (
       <div>
         <Alert variant="danger" className="text-center p-5">Error: {error}</Alert>
@@ -94,14 +94,14 @@ const MovieDetail = () => {
   }
 
   // Use test movie data if we're viewing the test movie or if no movie data is available
-  const movieData = (movieId === 'test-movie' || !selectedMovie) ? testMovie : selectedMovie;
+  const movieData = (movieId === '65ffaf0cbb45d068a11edd6a' || !selectedMovie) ? testMovie : selectedMovie;
 
   // Check if reviews exist
   const hasReviews = movieData.reviews && movieData.reviews.length > 0;
   
   return (
     <Container className="py-4 movie-detail-container">
-      {movieId !== 'test-movie' && testImageSection}
+      {movieId !== '65ffaf0cbb45d068a11edd6a' && testImageSection}
       
       <div className="text-center mb-4">
         <div className="poster-frame mb-3">
@@ -165,7 +165,7 @@ const MovieDetail = () => {
       
       {loggedIn && (
         <ReviewForm 
-          movieId={movieId === 'test-movie' ? 'test-movie' : movieData._id} 
+          movieId={movieId === '65ffaf0cbb45d068a11edd6a' ? '65ffaf0cbb45d068a11edd6a' : movieData._id} 
           onReviewAdded={handleReviewAdded}
         />
       )}

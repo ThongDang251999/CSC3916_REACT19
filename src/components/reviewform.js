@@ -41,7 +41,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
     console.log("Submitting review data:", reviewData);
 
     // Special handling for test movie
-    if (movieId === 'test-movie') {
+    if (movieId === '65ffaf0cbb45d068a11edd6a') {
       console.log("Test movie - simulating successful review submission");
       setTimeout(() => {
         setSuccess(true);

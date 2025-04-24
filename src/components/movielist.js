@@ -41,19 +41,15 @@ function MovieList() {
         return isValidUrl(url) ? url : url;
     };
 
-    // Test movie to display when no movies are available from API
-    const testMovie = {
-        _id: 'test-movie',
+    // Test movie data for when API doesn't return data
+    const testMovies = [{
+        _id: '65ffaf0cbb45d068a11edd6a',  // Changed from 'test-movie'
         title: 'Guardians of the Galaxy (Test)',
         releaseDate: '2014',
         genre: 'Action/Sci-Fi',
         avgRating: 4.5,
-        imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg',
-        actors: [
-            { actorName: 'Chris Pratt', characterName: 'Star-Lord' },
-            { actorName: 'Zoe Saldana', characterName: 'Gamora' }
-        ]
-    };
+        imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'
+    }];
 
     if (!loggedIn) {
         return (
@@ -79,25 +75,25 @@ function MovieList() {
                             <Card 
                                 className="movie-card h-100 bg-dark text-white" 
                                 as={Link} 
-                                to={`/movie/test-movie`}
-                                onClick={() => handleClick(testMovie)}
+                                to={`/movie/65ffaf0cbb45d068a11edd6a`}
+                                onClick={() => handleClick(testMovies[0])}
                                 style={{ textDecoration: 'none' }}
                             >
                                 <div className="movie-card-img-container">
                                     <Card.Img 
                                         variant="top" 
-                                        src={testMovie.imageUrl} 
-                                        alt={testMovie.title}
+                                        src={testMovies[0].imageUrl} 
+                                        alt={testMovies[0].title}
                                         className="movie-card-img"
                                     />
                                 </div>
                                 <Card.Body className="text-center">
-                                    <Card.Title>{testMovie.title}</Card.Title>
+                                    <Card.Title>{testMovies[0].title}</Card.Title>
                                     <Card.Text className="d-flex justify-content-between align-items-center">
-                                        <small>{testMovie.releaseDate}</small>
+                                        <small>{testMovies[0].releaseDate}</small>
                                         <span className="d-flex align-items-center">
                                             <BsStarFill className="text-warning me-1" /> 
-                                            {testMovie.avgRating ? Number(testMovie.avgRating).toFixed(1) : 'N/A'}
+                                            {testMovies[0].avgRating ? Number(testMovies[0].avgRating).toFixed(1) : 'N/A'}
                                         </span>
                                     </Card.Text>
                                 </Card.Body>
@@ -120,25 +116,25 @@ function MovieList() {
                         <Card 
                             className="movie-card h-100 bg-dark text-white" 
                             as={Link} 
-                            to={`/movie/test-movie`}
-                            onClick={() => handleClick(testMovie)}
+                            to={`/movie/65ffaf0cbb45d068a11edd6a`}
+                            onClick={() => handleClick(testMovies[0])}
                             style={{ textDecoration: 'none' }}
                         >
                             <div className="movie-card-img-container">
                                 <Card.Img 
                                     variant="top" 
-                                    src={testMovie.imageUrl} 
-                                    alt={testMovie.title}
+                                    src={testMovies[0].imageUrl} 
+                                    alt={testMovies[0].title}
                                     className="movie-card-img"
                                 />
                             </div>
                             <Card.Body className="text-center">
-                                <Card.Title>{testMovie.title}</Card.Title>
+                                <Card.Title>{testMovies[0].title}</Card.Title>
                                 <Card.Text className="d-flex justify-content-between align-items-center">
-                                    <small>{testMovie.releaseDate}</small>
+                                    <small>{testMovies[0].releaseDate}</small>
                                     <span className="d-flex align-items-center">
                                         <BsStarFill className="text-warning me-1" /> 
-                                        {testMovie.avgRating ? Number(testMovie.avgRating).toFixed(1) : 'N/A'}
+                                        {testMovies[0].avgRating ? Number(testMovies[0].avgRating).toFixed(1) : 'N/A'}
                                     </span>
                                 </Card.Text>
                             </Card.Body>
