@@ -77,12 +77,16 @@ export function fetchMovie(movieId) {
     return dispatch => {
         dispatch(fetchMovieRequest());
         
-        return fetch(`${env.REACT_APP_API_URL}/movies/${movieId}?reviews=true`, {
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        
+        return fetch(`${env.REACT_APP_API_URL}/movies/${movieId}?reviews=true&_t=${timestamp}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('token')
+                'Authorization': localStorage.getItem('token'),
+                'Cache-Control': 'no-cache, no-store'
             },
             mode: 'cors'
         }).then((response) => {

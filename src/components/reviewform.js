@@ -73,6 +73,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
         
         // Call the callback to refresh movie data
         if (onReviewAdded) {
+          console.log("Calling onReviewAdded callback after successful submission");
           onReviewAdded();
         }
         
