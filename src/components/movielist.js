@@ -63,7 +63,7 @@ function MovieList() {
         releaseDate: '2014',
         genre: 'Action/Sci-Fi',
         avgRating: 5,
-        imageUrl: 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'
+        imageUrl: 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg'
     }];
 
     if (!loggedIn) {
@@ -100,6 +100,11 @@ function MovieList() {
                                         src={testMovies[0].imageUrl} 
                                         alt={testMovies[0].title}
                                         className="movie-card-img"
+                                        onError={(e) => {
+                                            console.error(`Failed to load image: ${testMovies[0].imageUrl}`);
+                                            e.target.onerror = null;
+                                            e.target.src = 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg';
+                                        }}
                                     />
                                 </div>
                                 <Card.Body className="text-center">
@@ -141,6 +146,11 @@ function MovieList() {
                                     src={testMovies[0].imageUrl} 
                                     alt={testMovies[0].title}
                                     className="movie-card-img"
+                                    onError={(e) => {
+                                        console.error(`Failed to load image: ${testMovies[0].imageUrl}`);
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg';
+                                    }}
                                 />
                             </div>
                             <Card.Body className="text-center">

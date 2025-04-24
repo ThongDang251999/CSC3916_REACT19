@@ -99,28 +99,29 @@ const MovieDetail = () => {
   
   return (
     <Container className="py-4 movie-detail-container">
-      <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '0px', maxWidth: '420px', margin: '0 auto' }}>
-        <div className="poster-frame mb-3">
+      <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '0px', maxWidth: '420px', margin: '0 auto', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+        <div className="poster-frame mb-3" style={{ marginBottom: '10px' }}>
           <Image 
-            src={movieData.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
+            src={movieData.imageUrl} 
             alt={movieData.title}
             className="movie-poster-img"
             style={{ 
               maxHeight: '500px',
-              border: '2px solid white',
+              border: '2px solid #fff', 
               borderRadius: '0px',
               padding: '0px', 
               background: 'white',
+              boxShadow: '0 0 5px rgba(0,0,0,0.2)'
             }}
             onError={(e) => {
               console.error(`Failed to load image: ${movieData.imageUrl}`);
               e.target.onerror = null;
-              e.target.src = 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg';
+              e.target.src = 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_SX300.jpg';
             }}
           />
         </div>
         
-        <h4 className="text-center" style={{ marginTop: '10px', marginBottom: '15px', fontWeight: 'normal', fontSize: '16px' }}>{movieData.title}</h4>
+        <h4 className="text-center" style={{ marginTop: '10px', marginBottom: '10px', fontWeight: 'normal', fontSize: '16px' }}>{movieData.title}</h4>
         
         {movieData.actors && movieData.actors.length > 0 && (
           <div className="cast-info text-center" style={{ marginBottom: '15px', lineHeight: '1.2' }}>
@@ -143,13 +144,13 @@ const MovieDetail = () => {
           <div className="reviews-list">
             {movieData.reviews.map((review, i) => (
               <div key={i} className="review-item py-1 px-2 d-flex justify-content-between" style={{ borderBottom: '1px solid #444' }}>
-                <div className="review-username" style={{ width: '120px', textAlign: 'left', fontSize: '14px' }}>
+                <div className="review-username" style={{ width: '120px', textAlign: 'left', fontSize: '14px', color: '#aaa' }}>
                   <span>{review.username || 'Anonymous'}</span>
                 </div>
-                <div className="review-text flex-grow-1" style={{ textAlign: 'left', paddingLeft: '10px', fontSize: '14px' }}>
+                <div className="review-text flex-grow-1" style={{ textAlign: 'left', paddingLeft: '10px', fontSize: '14px', color: '#ddd' }}>
                   {review.review || 'No comment'}
                 </div>
-                <div className="review-rating" style={{ minWidth: '20px', textAlign: 'right', fontSize: '14px' }}>
+                <div className="review-rating" style={{ minWidth: '20px', textAlign: 'right', fontSize: '14px', color: '#aaa' }}>
                   <span>{review.rating}</span>
                 </div>
               </div>
