@@ -93,6 +93,7 @@ export function fetchMovie(movieId) {
             return response.json()
         }).then((res) => {
             console.log('Movie details received:', res);
+            console.log('Image URL from API:', res.imageUrl);
             dispatch(movieFetched(res));
             return res;
         }).catch((e) => {
@@ -124,6 +125,7 @@ export function fetchMovies() {
             return response.json()
         }).then((res) => {
             console.log('Movies received:', res);
+            console.log('First movie image URL:', res.length > 0 ? res[0].imageUrl : 'No movies returned');
             dispatch(moviesFetched(res));
             return res;
         }).catch((e) => {

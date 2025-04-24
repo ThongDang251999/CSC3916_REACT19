@@ -78,7 +78,7 @@ function MovieList() {
                             <div className="movie-card-img-container">
                                 <Card.Img 
                                     variant="top" 
-                                    src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
+                                    src={movie.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
                                     alt={movie.title}
                                     className="movie-card-img"
                                 />

@@ -40,6 +40,22 @@ const MovieDetail = () => {
     );
   }
 
+  // Test image section to check if images work
+  const testImageSection = (
+    <div className="mb-4 p-3 bg-dark">
+      <h4 className="text-center mb-3">Test Image</h4>
+      <div className="text-center">
+        <img 
+          src="https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg" 
+          alt="Test Guardians of the Galaxy" 
+          className="img-fluid"
+          style={{ maxHeight: "300px" }}
+        />
+        <p className="mt-2">Direct hardcoded test image URL</p>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return <div className="text-center p-5">Loading movie details...</div>;
   }
@@ -57,14 +73,19 @@ const MovieDetail = () => {
   
   return (
     <Container className="py-4 movie-detail-container">
+      {testImageSection}
+      
       <div className="text-center mb-4">
         <div className="poster-frame mb-3">
           <Image 
-            src={selectedMovie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
+            src={selectedMovie.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
             alt={selectedMovie.title}
             className="movie-poster-img"
             style={{ maxHeight: '500px', border: '2px solid #333', padding: '4px', background: '#000' }}
           />
+          <div className="mt-2 small">
+            <p>Image URL: {selectedMovie.imageUrl || 'No image URL'}</p>
+          </div>
         </div>
         
         <h2 className="mb-3 text-center">{selectedMovie.title}</h2>
