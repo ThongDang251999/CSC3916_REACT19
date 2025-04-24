@@ -144,7 +144,7 @@ const MovieDetail = () => {
           <div className="cast-info text-center" style={{ marginBottom: '20px', lineHeight: '1.5' }}>
             {movieData.actors.map((actor, i) => (
               <div key={i} style={{ marginBottom: '4px', color: '#333' }}>
-                <strong>{actor.actorName}</strong> {actor.characterName && actor.characterName}
+                <strong>{actor.actorName}</strong> {actor.characterName}
               </div>
             ))}
           </div>
