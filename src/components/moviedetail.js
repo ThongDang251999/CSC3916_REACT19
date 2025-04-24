@@ -124,52 +124,58 @@ const MovieDetail = () => {
             src={movieData.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
             alt={movieData.title}
             className="movie-poster-img"
-            style={{ maxHeight: '500px', border: '2px solid #333', padding: '4px', background: '#000' }}
+            style={{ 
+              maxHeight: '500px', 
+              border: '2px solid #333', 
+              padding: '8px', 
+              background: '#000',
+              boxShadow: '0 10px 20px rgba(0, 0, 0, 0.5)',
+              borderRadius: '4px'
+            }}
             onError={(e) => {
               console.error(`Failed to load image: ${movieData.imageUrl}`);
               e.target.onerror = null;
               e.target.src = 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg';
             }}
           />
-          <div className="mt-2 small">
-            <p>Image URL: {movieData.imageUrl || 'No image URL'}</p>
-          </div>
         </div>
         
-        <h2 className="mb-3 text-center">{movieData.title}</h2>
+        <h2 className="mb-3 text-center" style={{ fontSize: '2rem', fontWeight: 'bold' }}>{movieData.title}</h2>
         
         {movieData.actors && movieData.actors.length > 0 && (
           <div className="cast-info text-center mb-3">
             {movieData.actors.map((actor, i) => (
-              <div key={i} className="mb-2">
-                <strong>{actor.actorName}</strong> {actor.characterName && `${actor.characterName}`}
+              <div key={i} className="mb-2" style={{ fontSize: '1.1rem' }}>
+                <strong>{actor.actorName}</strong> {actor.characterName && ` as ${actor.characterName}`}
               </div>
             ))}
           </div>
         )}
         
         <div className="rating d-flex justify-content-center align-items-center mb-4">
-          <BsStarFill className="text-warning me-2" /> 
-          <span style={{ fontSize: '1.2rem' }}>
+          <BsStarFill className="text-warning me-2" style={{ fontSize: '1.5rem' }} /> 
+          <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
             {movieData.avgRating 
-              ? Number(movieData.avgRating).toFixed(0) 
+              ? Number(movieData.avgRating).toFixed(1) 
               : '0'}
           </span>
         </div>
       </div>
 
       {hasReviews && (
-        <div className="reviews-section bg-dark text-white p-3 mb-4">
+        <div className="reviews-section bg-dark text-white p-4 mb-4" style={{ borderRadius: '8px', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.3)' }}>
+          <h4 className="mb-3">Reviews</h4>
           <div className="reviews-list">
             {movieData.reviews.map((review, i) => (
-              <div key={i} className="review-item p-2 mb-2 d-flex">
-                <div className="review-username me-2">
+              <div key={i} className="review-item p-3 mb-3 d-flex" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                <div className="review-username me-3">
                   <strong>{review.username || 'Anonymous'}</strong>
                 </div>
                 <div className="review-text">
                   {review.review || 'No comment'}
                 </div>
                 <div className="ms-auto review-rating d-flex align-items-center">
+                  <BsStarFill className="text-warning me-1" />
                   <span>{review.rating}</span>
                 </div>
               </div>
