@@ -56,9 +56,9 @@ function MovieList() {
         return isValidUrl(url) ? url : url;
     };
 
-    // Test movie data for when API doesn't return data
+    // Test movie data for Guardians of the Galaxy
     const testMovies = [{
-        _id: '65ffaf0cbb45d068a11edd6a',  // Changed from 'test-movie'
+        _id: '65ffaf0cbb45d068a11edd6a',
         title: 'Guardians of the Galaxy',
         releaseDate: '2014',
         genre: 'Action/Sci-Fi',
@@ -78,13 +78,13 @@ function MovieList() {
         return <div className="text-center p-5">Loading movies...</div>;
     }
 
-    // Display error and the test movie card
+    // Display error and also show Guardians of the Galaxy movie
     if (error) {
         return (
             <div>
                 <Alert variant="danger" className="text-center p-5">Error loading movies: {error}</Alert>
                 <div className="movie-list-container py-4">
-                    <h2 className="text-center mb-4">Test Movie (Local Only)</h2>
+                    <h2 className="text-center mb-4">Top Rated Movies</h2>
                     <Row xs={1} md={2} lg={3} className="g-4">
                         <Col>
                             <Card 
@@ -125,12 +125,11 @@ function MovieList() {
         );
     }
 
-    // If no movies from API, show test movie
+    // If no movies from API, show Guardians of the Galaxy
     if (!memoizedMovies || memoizedMovies.length === 0) {
         return (
             <div className="movie-list-container py-4">
-                <h2 className="text-center mb-4">Test Movie (Local Only)</h2>
-                <p className="text-center text-muted mb-4">No movies found in API, showing test movie</p>
+                <h2 className="text-center mb-4">Top Rated Movies</h2>
                 <Row xs={1} md={2} lg={3} className="g-4">
                     <Col>
                         <Card 

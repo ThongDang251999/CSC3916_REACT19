@@ -17,7 +17,7 @@ const MovieDetail = () => {
   const loggedIn = useSelector(state => state.auth.loggedIn);
   const [refreshKey, setRefreshKey] = useState(0);
   
-  // Test movie data for when API doesn't return data
+  // Test movie data for Guardians of the Galaxy
   const testMovie = {
     _id: '65ffaf0cbb45d068a11edd6a',
     title: 'Guardians of the Galaxy',
@@ -41,8 +41,8 @@ const MovieDetail = () => {
   useEffect(() => {
     console.log("MovieDetail component - movieId:", movieId);
     if (movieId === '65ffaf0cbb45d068a11edd6a') {
-      console.log("Using test movie data instead of fetching from API");
-      // No need to fetch from API for test movie
+      console.log("Using Guardians of the Galaxy data instead of fetching from API");
+      // No need to fetch from API for this specific movie
     } else if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
       console.log("Fetching movie details in MovieDetail component");
       dispatch(fetchMovie(movieId));
@@ -60,11 +60,11 @@ const MovieDetail = () => {
       console.log("Dispatching fetchMovie to update data");
       dispatch(fetchMovie(movieId));
     } else {
-      // For test movie, manually update the review list after a timeout to simulate API fetch
-      console.log("Using test movie, simulating data refresh");
+      // For Guardians movie, manually update the review list after a timeout to simulate API fetch
+      console.log("Using Guardians movie, simulating data refresh");
       setTimeout(() => {
-        console.log("Test movie data refreshed");
-        // This will trigger re-render for test movie
+        console.log("Guardians movie data refreshed");
+        // This will trigger re-render for Guardians movie
         setRefreshKey(prevKey => prevKey + 1); 
       }, 500);
     }
@@ -91,11 +91,17 @@ const MovieDetail = () => {
     );
   }
 
-  // Use test movie data if we're viewing the test movie or if no movie data is available
-  const movieData = (movieId === '65ffaf0cbb45d068a11edd6a' || !selectedMovie) ? testMovie : selectedMovie;
+  // Use Guardians movie data if we're viewing that specific movie or if no movie data is available
+  const movieData = (movieId === '65ffaf0cbb45d068a11edd6a') ? testMovie : selectedMovie;
+
+  if (!movieData && !loading) {
+    // Redirect to movie list if movie not found
+    navigate('/');
+    return null;
+  }
 
   // Check if reviews exist
-  const hasReviews = movieData.reviews && movieData.reviews.length > 0;
+  const hasReviews = movieData && movieData.reviews && movieData.reviews.length > 0;
   
   return (
     <Container className="py-4 movie-detail-container">
@@ -159,7 +165,7 @@ const MovieDetail = () => {
         </div>
       )}
       
-      {loggedIn && (
+      {loggedIn && movieData && (
         <ReviewForm 
           movieId={movieId === '65ffaf0cbb45d068a11edd6a' ? '65ffaf0cbb45d068a11edd6a' : movieData._id} 
           onReviewAdded={handleReviewAdded}
