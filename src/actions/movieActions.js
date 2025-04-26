@@ -257,3 +257,35 @@ export function submitReview(reviewData) {
         });
     }
 }
+
+export function fetchMovieReviews(movieId) {
+    console.log('Fetching reviews for movie:', movieId);
+    return dispatch => {
+        return fetch(`${env.REACT_APP_API_URL}/reviews/${movieId}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            mode: 'cors'
+        }).then((response) => {
+            console.log('Reviews response:', response.status);
+            if (!response.ok) {
+                throw new Error(response.statusText || 'Failed to fetch reviews');
+            }
+            return response.json();
+        }).then((res) => {
+            console.log('Reviews received:', res);
+            // Update the movie with these reviews
+            dispatch({
+                type: actionTypes.FETCH_REVIEWS,
+                reviews: res
+            });
+            return res;
+        }).catch((e) => {
+            console.error('Error fetching reviews:', e);
+            throw e;
+        });
+    }
+}

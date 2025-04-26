@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMovie, submitReview } from '../actions/movieActions';
+import { fetchMovie, submitReview, fetchMovieReviews } from '../actions/movieActions';
 import { Alert, Container, Form, Button, Image } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,15 @@ const MovieDetail = () => {
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
     if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
-      dispatch(fetchMovie(movieId));
+      dispatch(fetchMovie(movieId))
+        .then(() => {
+          // Fetch reviews separately after getting the movie
+          dispatch(fetchMovieReviews(movieId));
+        })
+        .catch(err => {
+          console.error("Error in fetching movie details:", err);
+        });
+      
       if (refreshKey > 0) setRefreshKey(0);
     }
   }, [dispatch, movieId, selectedMovie, refreshKey]);
@@ -43,7 +51,12 @@ const MovieDetail = () => {
         setComment('');
         setSubmitting(false);
         setRefreshKey(prevKey => prevKey + 1);
-        dispatch(fetchMovie(movieId));
+        
+        // Fetch the movie and reviews after submitting a new review
+        dispatch(fetchMovie(movieId))
+          .then(() => {
+            dispatch(fetchMovieReviews(movieId));
+          });
       })
       .catch(err => {
         console.error("Error submitting review:", err);

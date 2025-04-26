@@ -45,6 +45,14 @@ export default (state = initialState, action) => {
             case constants.SUBMIT_REVIEW:
                   updated.reviewSubmitted = action.result;
                   return updated;
+            case constants.FETCH_REVIEWS:
+                  if (updated.selectedMovie) {
+                        updated.selectedMovie = {
+                              ...updated.selectedMovie,
+                              reviews: action.reviews
+                        };
+                  }
+                  return updated;
             case constants.SEARCH_MOVIES_REQUEST:
                   updated.loading = true;
                   updated.error = null;
