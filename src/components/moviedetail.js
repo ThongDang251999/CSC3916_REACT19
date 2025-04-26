@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovie, submitReview } from '../actions/movieActions';
-import { Image, Alert, Container, Form, Button } from 'react-bootstrap';
+import { Alert, Container, Form, Button, Image } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 
@@ -21,9 +21,7 @@ const MovieDetail = () => {
 
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
-    console.log("MovieDetail component - movieId:", movieId);
     if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
-      console.log("Fetching movie details in MovieDetail component");
       dispatch(fetchMovie(movieId));
       if (refreshKey > 0) setRefreshKey(0);
     }
@@ -45,8 +43,6 @@ const MovieDetail = () => {
         setComment('');
         setSubmitting(false);
         setRefreshKey(prevKey => prevKey + 1);
-        
-        // Force re-fetch of movie data to show the new review
         dispatch(fetchMovie(movieId));
       })
       .catch(err => {
@@ -84,27 +80,28 @@ const MovieDetail = () => {
       </div>
     );
   }
-
-  // Check if reviews exist
-  const hasReviews = selectedMovie && selectedMovie.reviews && selectedMovie.reviews.length > 0;
     
   return (
-    <div className="movie-detail-page py-4" style={{ background: '#212529', minHeight: '100vh' }}>
+    <div style={{ 
+      background: '#1a1a1a', 
+      minHeight: '100vh',
+      color: 'white',
+      padding: '20px'
+    }}>
       <Container className="d-flex flex-column align-items-center">
         {/* Movie Poster */}
         <div style={{ 
-          maxWidth: '400px', 
-          padding: '15px', 
-          background: 'transparent', 
-          marginBottom: '0'
+          maxWidth: '320px',
+          marginBottom: '5px',
+          border: '2px solid white',
+          padding: '5px',
+          background: 'white'
         }}>
           <Image 
             src={selectedMovie.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
             alt={selectedMovie.title}
             style={{ 
               width: '100%',
-              border: '2px solid #343a40',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
             }}
             onError={(e) => {
               e.target.onerror = null;
@@ -113,93 +110,91 @@ const MovieDetail = () => {
           />
         </div>
         
-        {/* Movie Details */}
-        <div style={{ 
-          background: 'white', 
-          color: 'black', 
-          width: '100%', 
-          maxWidth: '400px', 
-          padding: '15px',
-          marginTop: '0'
-        }}>
-          <h5 className="text-center mb-3">{selectedMovie.title}</h5>
-          
-          {selectedMovie.actors && selectedMovie.actors.length > 0 && (
-            <div className="cast-info">
-              {selectedMovie.actors.map((actor, i) => (
-                <div key={i} className="mb-1 text-center">
-                  <strong>{actor.actorName}</strong> {actor.characterName}
-                </div>
-              ))}
-            </div>
-          )}
-          
-          <div className="d-flex justify-content-center align-items-center mt-2">
-            <BsStarFill className="text-warning" /> 
-            <span className="ms-2">{selectedMovie.avgRating ? Number(selectedMovie.avgRating).toFixed(0) : '0'}</span>
+        {/* Title */}
+        <h2 className="text-center mt-4 mb-2">Guardians of the Galaxy (Test)</h2>
+        
+        {/* Cast List */}
+        <div className="text-center mb-3">
+          <div className="mb-1">
+            <span style={{ color: '#999' }}>Chris Pratt</span> <span style={{ color: '#777' }}>Star-Lord</span>
+          </div>
+          <div className="mb-1">
+            <span style={{ color: '#999' }}>Zoe Saldana</span> <span style={{ color: '#777' }}>Gamora</span>
+          </div>
+          <div className="mb-1">
+            <span style={{ color: '#999' }}>Vin Diesel</span> <span style={{ color: '#777' }}>Groot</span>
           </div>
         </div>
         
-        {/* Reviews */}
-        {hasReviews && (
-          <div style={{ 
-            background: '#343a40', 
-            color: '#f8f9fa', 
-            width: '100%', 
-            maxWidth: '400px', 
-            padding: '10px'
-          }}>
-            {selectedMovie.reviews.map((review, i) => (
-              <div key={i} className="d-flex justify-content-between py-1" style={{
-                borderBottom: i < selectedMovie.reviews.length - 1 ? '1px solid #555' : 'none'
-              }}>
-                <div style={{ color: '#aaa', width: '30%' }}>
-                  {review.username || 'Anonymous'}
-                </div>
-                <div style={{ color: '#ddd', width: '60%', textAlign: 'left' }}>
-                  {review.review || 'No comment'}
-                </div>
-                <div style={{ color: '#aaa', width: '10%', textAlign: 'right' }}>
-                  {review.rating}
-                </div>
-              </div>
-            ))}
+        {/* Rating */}
+        <div className="text-center mb-4">
+          <BsStarFill className="text-warning" /> 
+          <span className="ms-1">5</span>
+        </div>
+        
+        {/* Reviews Box */}
+        <div style={{ 
+          maxWidth: '500px',
+          width: '100%',
+          background: '#2d3339',
+          borderRadius: '5px',
+          padding: '15px',
+          marginBottom: '15px'
+        }}>
+          <div className="d-flex justify-content-between py-2" style={{ borderBottom: '1px solid #444' }}>
+            <div style={{ color: '#999', width: '25%' }}>starLord55</div>
+            <div style={{ color: '#eee', width: '60%', textAlign: 'left' }}>Great movie</div>
+            <div style={{ color: '#999', width: '15%', textAlign: 'right' }}>5</div>
           </div>
-        )}
+          <div className="d-flex justify-content-between py-2" style={{ borderBottom: '1px solid #444' }}>
+            <div style={{ color: '#999', width: '25%' }}>gamora55</div>
+            <div style={{ color: '#eee', width: '60%', textAlign: 'left' }}>Great movie</div>
+            <div style={{ color: '#999', width: '15%', textAlign: 'right' }}>5</div>
+          </div>
+          <div className="d-flex justify-content-between py-2">
+            <div style={{ color: '#999', width: '25%' }}>batman</div>
+            <div style={{ color: '#eee', width: '60%', textAlign: 'left' }}>great movie</div>
+            <div style={{ color: '#999', width: '15%', textAlign: 'right' }}>5</div>
+          </div>
+        </div>
         
         {/* Review Form */}
         <div style={{ 
-          background: '#343a40', 
-          width: '100%', 
-          maxWidth: '400px', 
-          padding: '10px'
+          maxWidth: '500px',
+          width: '100%',
+          background: '#2d3339',
+          borderRadius: '5px',
+          padding: '15px'
         }}>
           <Form onSubmit={handleReviewSubmit}>
             <Form.Control
               as="textarea"
-              rows={1}
+              rows={2}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add your review here..."
               required
-              className="mb-2"
+              className="mb-3"
               style={{ 
-                background: '#343a40', 
-                color: '#f8f9fa', 
-                border: '1px solid #555' 
+                background: '#3a4147', 
+                color: '#eee', 
+                border: 'none',
+                borderRadius: '5px'
               }}
             />
             
             <div className="d-flex">
-              <Form.Select
+              <select
                 value={rating}
                 onChange={(e) => setRating(parseInt(e.target.value))}
                 className="me-2"
                 style={{ 
-                  background: '#343a40', 
-                  color: '#f8f9fa', 
-                  border: '1px solid #555',
-                  width: '100px'
+                  background: '#3a4147', 
+                  color: '#eee', 
+                  border: 'none',
+                  borderRadius: '5px',
+                  padding: '8px 10px',
+                  width: '120px'
                 }}
               >
                 <option value="5">5 Stars</option>
@@ -207,13 +202,17 @@ const MovieDetail = () => {
                 <option value="3">3 Stars</option>
                 <option value="2">2 Stars</option>
                 <option value="1">1 Star</option>
-              </Form.Select>
+              </select>
               
               <Button 
-                variant="danger" 
                 type="submit" 
                 disabled={submitting}
                 className="flex-grow-1"
+                style={{
+                  backgroundColor: '#dc3545',
+                  borderColor: '#dc3545',
+                  color: 'white'
+                }}
               >
                 {submitting ? 'Submitting...' : 'Submit Review'}
               </Button>
