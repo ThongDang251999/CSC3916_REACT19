@@ -16,34 +16,11 @@ const MovieDetail = () => {
   const error = useSelector(state => state.movie.error);
   const loggedIn = useSelector(state => state.auth.loggedIn);
   const [refreshKey, setRefreshKey] = useState(0);
-  
-  // Test movie data for Guardians of the Galaxy
-  const testMovie = {
-    _id: '65ffaf0cbb45d068a11edd6a',
-    title: 'Guardians of the Galaxy',
-    releaseDate: '2014',
-    genre: 'Action/Sci-Fi',
-    avgRating: 5,
-    imageUrl: 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg',
-    actors: [
-      { actorName: 'Chris Pratt', characterName: 'Peter Quill' },
-      { actorName: 'Zoe Saldana', characterName: 'Gamora' },
-      { actorName: 'Vin Diesel', characterName: 'Groot' }
-    ],
-    reviews: [
-      { username: 'starLord55', rating: 5, review: 'Great movie' },
-      { username: 'gamora55', rating: 5, review: 'Great movie' },
-      { username: 'batman', rating: 5, review: 'great movie' }
-    ]
-  };
 
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
     console.log("MovieDetail component - movieId:", movieId);
-    if (movieId === '65ffaf0cbb45d068a11edd6a') {
-      console.log("Using Guardians of the Galaxy data instead of fetching from API");
-      // No need to fetch from API for this specific movie
-    } else if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
+    if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
       console.log("Fetching movie details in MovieDetail component");
       dispatch(fetchMovie(movieId));
       if (refreshKey > 0) setRefreshKey(0);
@@ -56,18 +33,8 @@ const MovieDetail = () => {
     setRefreshKey(prevKey => prevKey + 1);
     
     // Force re-fetch of movie data
-    if (movieId !== '65ffaf0cbb45d068a11edd6a') {
-      console.log("Dispatching fetchMovie to update data");
-      dispatch(fetchMovie(movieId));
-    } else {
-      // For Guardians movie, manually update the review list after a timeout to simulate API fetch
-      console.log("Using Guardians movie, simulating data refresh");
-      setTimeout(() => {
-        console.log("Guardians movie data refreshed");
-        // This will trigger re-render for Guardians movie
-        setRefreshKey(prevKey => prevKey + 1); 
-      }, 500);
-    }
+    console.log("Dispatching fetchMovie to update data");
+    dispatch(fetchMovie(movieId));
   };
 
   if (!loggedIn) {
@@ -79,11 +46,11 @@ const MovieDetail = () => {
     );
   }
 
-  if (loading && movieId !== '65ffaf0cbb45d068a11edd6a') {
+  if (loading) {
     return <div className="text-center p-5">Loading movie details...</div>;
   }
 
-  if (error && movieId !== '65ffaf0cbb45d068a11edd6a') {
+  if (error) {
     return (
       <div>
         <Alert variant="danger" className="text-center p-5">Error: {error}</Alert>
@@ -91,25 +58,27 @@ const MovieDetail = () => {
     );
   }
 
-  // Use Guardians movie data if we're viewing that specific movie or if no movie data is available
-  const movieData = (movieId === '65ffaf0cbb45d068a11edd6a') ? testMovie : selectedMovie;
-
-  if (!movieData && !loading) {
+  if (!selectedMovie && !loading) {
     // Redirect to movie list if movie not found
-    navigate('/');
-    return null;
+    return (
+      <div className="text-center p-5">
+        <Alert variant="warning">
+          Movie not found. <Link to="/">Return to movie list</Link>
+        </Alert>
+      </div>
+    );
   }
 
   // Check if reviews exist
-  const hasReviews = movieData && movieData.reviews && movieData.reviews.length > 0;
-  
+  const hasReviews = selectedMovie && selectedMovie.reviews && selectedMovie.reviews.length > 0;
+    
   return (
     <Container className="py-4 movie-detail-container">
       <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '0px', maxWidth: '420px', margin: '0 auto', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <div className="poster-frame mb-3" style={{ marginBottom: '10px' }}>
           <Image 
-            src={movieData.imageUrl} 
-            alt={movieData.title}
+            src={selectedMovie.imageUrl} 
+            alt={selectedMovie.title}
             className="movie-poster-img"
             style={{ 
               maxHeight: '500px',
@@ -120,35 +89,35 @@ const MovieDetail = () => {
               boxShadow: '0 0 5px rgba(0,0,0,0.2)'
             }}
             onError={(e) => {
-              console.error(`Failed to load image: ${movieData.imageUrl}`);
+              console.error(`Failed to load image: ${selectedMovie.imageUrl}`);
               e.target.onerror = null;
-              e.target.src = 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg';
+              e.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
             }}
           />
         </div>
+
+        <h4 className="text-center" style={{ marginTop: '10px', marginBottom: '10px', fontWeight: 'normal', fontSize: '16px' }}>{selectedMovie.title}</h4>
         
-        <h4 className="text-center" style={{ marginTop: '10px', marginBottom: '10px', fontWeight: 'normal', fontSize: '16px' }}>{movieData.title}</h4>
-        
-        {movieData.actors && movieData.actors.length > 0 && (
+        {selectedMovie.actors && selectedMovie.actors.length > 0 && (
           <div className="cast-info text-center" style={{ marginBottom: '15px', lineHeight: '1.2' }}>
-            {movieData.actors.map((actor, i) => (
+            {selectedMovie.actors.map((actor, i) => (
               <div key={i} style={{ marginBottom: '4px', color: '#333', fontSize: '14px' }}>
                 <strong>{actor.actorName}</strong> {actor.characterName}
               </div>
             ))}
           </div>
         )}
-        
+
         <div className="rating d-flex justify-content-center align-items-center" style={{ marginBottom: '5px' }}>
           <BsStarFill className="text-warning me-1" style={{ fontSize: '14px' }} /> 
-          <span style={{ fontSize: '14px' }}>{movieData.avgRating ? Number(movieData.avgRating).toFixed(0) : '0'}</span>
+          <span style={{ fontSize: '14px' }}>{selectedMovie.avgRating ? Number(selectedMovie.avgRating).toFixed(0) : '0'}</span>
         </div>
       </div>
-
+          
       {hasReviews && (
         <div className="reviews-section bg-dark text-white p-3 mb-0" style={{ maxWidth: '420px', margin: '0 auto' }}>
           <div className="reviews-list">
-            {movieData.reviews.map((review, i) => (
+            {selectedMovie.reviews.map((review, i) => (
               <div key={i} className="review-item py-1 px-2 d-flex justify-content-between" style={{ borderBottom: '1px solid #444' }}>
                 <div className="review-username" style={{ width: '120px', textAlign: 'left', fontSize: '14px', color: '#aaa' }}>
                   <span>{review.username || 'Anonymous'}</span>
@@ -164,10 +133,10 @@ const MovieDetail = () => {
           </div>
         </div>
       )}
-      
-      {loggedIn && movieData && (
+          
+      {loggedIn && selectedMovie && (
         <ReviewForm 
-          movieId={movieId === '65ffaf0cbb45d068a11edd6a' ? '65ffaf0cbb45d068a11edd6a' : movieData._id} 
+          movieId={selectedMovie._id} 
           onReviewAdded={handleReviewAdded}
         />
       )}

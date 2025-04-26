@@ -2,8 +2,9 @@ import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovies, setMovie } from "../actions/movieActions";
 import { Link } from 'react-router-dom';
-import { Image, Card, Row, Col, Alert } from 'react-bootstrap';
-import { BsStarFill } from 'react-icons/bs';
+import { Card, Row, Col, Alert, Container, Form, Button } from 'react-bootstrap';
+import { BsStarFill, BsSearch } from 'react-icons/bs';
+import { useState } from 'react';
 
 function MovieList() {
     const dispatch = useDispatch();
@@ -11,6 +12,7 @@ function MovieList() {
     const loading = useSelector(state => state.movie.loading);
     const error = useSelector(state => state.movie.error);
     const loggedIn = useSelector(state => state.auth.loggedIn);
+    const [searchTerm, setSearchTerm] = useState("");
 
     // Memoize the movies array
     const memoizedMovies = useMemo(() => {
@@ -32,6 +34,29 @@ function MovieList() {
         return Array.from(uniqueMovies.values());
     }, [movies]);
 
+    // Filter movies based on search term
+    const filteredMovies = useMemo(() => {
+        if (!searchTerm.trim()) return memoizedMovies;
+        
+        const searchLower = searchTerm.toLowerCase();
+        return memoizedMovies.filter(movie => {
+            // Search by movie title
+            if (movie.title && movie.title.toLowerCase().includes(searchLower)) {
+                return true;
+            }
+            
+            // Search by actor name
+            if (movie.actors && movie.actors.length > 0) {
+                return movie.actors.some(actor => 
+                    actor.actorName && actor.actorName.toLowerCase().includes(searchLower) ||
+                    actor.characterName && actor.characterName.toLowerCase().includes(searchLower)
+                );
+            }
+            
+            return false;
+        });
+    }, [memoizedMovies, searchTerm]);
+
     useEffect(() => {
         dispatch(fetchMovies());
     }, [dispatch]);
@@ -40,31 +65,10 @@ function MovieList() {
         dispatch(setMovie(movie));
     };
     
-    // Function to validate if a string is a valid URL
-    const isValidUrl = (string) => {
-        try {
-            new URL(string);
-            return true;
-        } catch (_) {
-            return false;
-        }
+    const handleSearch = (e) => {
+        e.preventDefault();
+        // Search is handled via the filteredMovies variable
     };
-
-    // Get image URL, either from direct URL or from backend path
-    const getImageUrl = (url) => {
-        if (!url) return 'https://via.placeholder.com/300x450?text=No+Image';
-        return isValidUrl(url) ? url : url;
-    };
-
-    // Test movie data for Guardians of the Galaxy
-    const testMovies = [{
-        _id: '65ffaf0cbb45d068a11edd6a',
-        title: 'Guardians of the Galaxy',
-        releaseDate: '2014',
-        genre: 'Action/Sci-Fi',
-        avgRating: 5,
-        imageUrl: 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg'
-    }];
 
     if (!loggedIn) {
         return (
@@ -78,103 +82,63 @@ function MovieList() {
         return <div className="text-center p-5">Loading movies...</div>;
     }
 
-    // Display error and also show Guardians of the Galaxy movie
     if (error) {
         return (
-            <div>
-                <Alert variant="danger" className="text-center p-5">Error loading movies: {error}</Alert>
-                <div className="movie-list-container py-4">
-                    <h2 className="text-center mb-4">Top Rated Movies</h2>
-                    <Row xs={1} md={2} lg={3} className="g-4">
-                        <Col>
-                            <Card 
-                                className="movie-card h-100 bg-dark text-white" 
-                                as={Link} 
-                                to={`/movie/65ffaf0cbb45d068a11edd6a`}
-                                onClick={() => handleClick(testMovies[0])}
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <div className="movie-card-img-container">
-                                    <Card.Img 
-                                        variant="top" 
-                                        src={testMovies[0].imageUrl} 
-                                        alt={testMovies[0].title}
-                                        className="movie-card-img"
-                                        onError={(e) => {
-                                            console.error(`Failed to load image: ${testMovies[0].imageUrl}`);
-                                            e.target.onerror = null;
-                                            e.target.src = 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg';
-                                        }}
-                                    />
-                                </div>
-                                <Card.Body className="text-center">
-                                    <Card.Title>{testMovies[0].title}</Card.Title>
-                                    <Card.Text className="d-flex justify-content-between align-items-center">
-                                        <small>{testMovies[0].releaseDate}</small>
-                                        <span className="d-flex align-items-center">
-                                            <BsStarFill className="text-warning me-1" /> 
-                                            {testMovies[0].avgRating ? Number(testMovies[0].avgRating).toFixed(1) : 'N/A'}
-                                        </span>
-                                    </Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                </div>
-            </div>
+            <Alert variant="danger" className="text-center p-5">
+                Error loading movies: {error}
+            </Alert>
         );
     }
 
-    // If no movies from API, show Guardians of the Galaxy
-    if (!memoizedMovies || memoizedMovies.length === 0) {
+    if (!filteredMovies || filteredMovies.length === 0) {
         return (
-            <div className="movie-list-container py-4">
+            <Container className="py-4">
                 <h2 className="text-center mb-4">Top Rated Movies</h2>
-                <Row xs={1} md={2} lg={3} className="g-4">
-                    <Col>
-                        <Card 
-                            className="movie-card h-100 bg-dark text-white" 
-                            as={Link} 
-                            to={`/movie/65ffaf0cbb45d068a11edd6a`}
-                            onClick={() => handleClick(testMovies[0])}
-                            style={{ textDecoration: 'none' }}
-                        >
-                            <div className="movie-card-img-container">
-                                <Card.Img 
-                                    variant="top" 
-                                    src={testMovies[0].imageUrl} 
-                                    alt={testMovies[0].title}
-                                    className="movie-card-img"
-                                    onError={(e) => {
-                                        console.error(`Failed to load image: ${testMovies[0].imageUrl}`);
-                                        e.target.onerror = null;
-                                        e.target.src = 'https://ichef.bbci.co.uk/images/ic/1200x675/p061d1pl.jpg';
-                                    }}
-                                />
-                            </div>
-                            <Card.Body className="text-center">
-                                <Card.Title>{testMovies[0].title}</Card.Title>
-                                <Card.Text className="d-flex justify-content-between align-items-center">
-                                    <small>{testMovies[0].releaseDate}</small>
-                                    <span className="d-flex align-items-center">
-                                        <BsStarFill className="text-warning me-1" /> 
-                                        {testMovies[0].avgRating ? Number(testMovies[0].avgRating).toFixed(1) : 'N/A'}
-                                    </span>
-                                </Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                
+                {/* Search Form */}
+                <Form onSubmit={handleSearch} className="mb-4">
+                    <div className="d-flex">
+                        <Form.Control
+                            type="text"
+                            placeholder="Search movies or actors..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <Button variant="primary" type="submit" className="ms-2">
+                            <BsSearch />
+                        </Button>
+                    </div>
+                </Form>
+                
+                <Alert variant="info">
+                    {searchTerm ? "No movies found matching your search." : "No movies available at this time."}
+                </Alert>
+            </Container>
         );
     }
 
     return (
-        <div className="movie-list-container py-4">
+        <Container className="movie-list-container py-4">
             <h2 className="text-center mb-4">Top Rated Movies</h2>
+            
+            {/* Search Form */}
+            <Form onSubmit={handleSearch} className="mb-4">
+                <div className="d-flex">
+                    <Form.Control
+                        type="text"
+                        placeholder="Search movies or actors..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <Button variant="primary" type="submit" className="ms-2">
+                        <BsSearch />
+                    </Button>
+                </div>
+            </Form>
+            
             <p className="text-center text-muted mb-4">Movies are sorted by average rating</p>
             <Row xs={1} md={2} lg={3} className="g-4">
-                {memoizedMovies.map((movie) => (
+                {filteredMovies.map((movie) => (
                     <Col key={movie._id}>
                         <Card 
                             className="movie-card h-100 bg-dark text-white" 
@@ -186,9 +150,14 @@ function MovieList() {
                             <div className="movie-card-img-container">
                                 <Card.Img 
                                     variant="top" 
-                                    src={movie.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
+                                    src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
                                     alt={movie.title}
                                     className="movie-card-img"
+                                    onError={(e) => {
+                                        console.error(`Failed to load image: ${movie.imageUrl}`);
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://via.placeholder.com/300x450?text=Image+Error';
+                                    }}
                                 />
                             </div>
                             <Card.Body className="text-center">
@@ -205,7 +174,7 @@ function MovieList() {
                     </Col>
                 ))}
             </Row>
-        </div>
+        </Container>
     );
 }
 

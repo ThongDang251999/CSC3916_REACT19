@@ -40,28 +40,7 @@ const ReviewForm = ({ movieId, onReviewAdded }) => {
 
     console.log("Submitting review data:", reviewData);
 
-    // Special handling for test movie
-    if (movieId === '65ffaf0cbb45d068a11edd6a') {
-      console.log("Test movie - simulating successful review submission");
-      setTimeout(() => {
-        setSuccess(true);
-        setRating(5);
-        setComment('');
-        setValidated(false);
-        setSubmitting(false);
-        
-        if (onReviewAdded) {
-          onReviewAdded();
-        }
-        
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      }, 1000);
-      return;
-    }
-
-    // For real movies, submit to API
+    // Submit to API
     dispatch(submitReview(reviewData))
       .then((res) => {
         console.log("Review submitted successfully:", res);
