@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMovie } from '../actions/movieActions';
-import { Card, Image, Row, Col, Alert, Container } from 'react-bootstrap';
+import { fetchMovie, submitReview } from '../actions/movieActions';
+import { Image, Alert, Container, Form, Button } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
-import ReviewForm from './reviewform';
 import { Link } from 'react-router-dom';
 
 const MovieDetail = () => {
@@ -16,6 +15,9 @@ const MovieDetail = () => {
   const error = useSelector(state => state.movie.error);
   const loggedIn = useSelector(state => state.auth.loggedIn);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
@@ -27,18 +29,33 @@ const MovieDetail = () => {
     }
   }, [dispatch, movieId, selectedMovie, refreshKey]);
 
-  const handleReviewAdded = () => {
-    // Trigger a refresh of movie data after review is added
-    console.log("Review added, refreshing movie data...");
-    setRefreshKey(prevKey => prevKey + 1);
+  const handleReviewSubmit = (event) => {
+    event.preventDefault();
+    setSubmitting(true);
     
-    // Force re-fetch of movie data
-    console.log("Dispatching fetchMovie to update data");
-    dispatch(fetchMovie(movieId));
+    const reviewData = {
+      movieId,
+      rating: parseInt(rating),
+      comment // This will be submitted as 'review' in the API call
+    };
+
+    dispatch(submitReview(reviewData))
+      .then(() => {
+        setRating(5);
+        setComment('');
+        setSubmitting(false);
+        setRefreshKey(prevKey => prevKey + 1);
+        
+        // Force re-fetch of movie data to show the new review
+        dispatch(fetchMovie(movieId));
+      })
+      .catch(err => {
+        console.error("Error submitting review:", err);
+        setSubmitting(false);
+      });
   };
 
   if (!loggedIn) {
-    // Redirect to login if not logged in
     return (
       <Alert variant="warning" className="text-center p-5">
         Please <Alert.Link onClick={() => navigate('/signin')}>log in</Alert.Link> to view movie details.
@@ -59,7 +76,6 @@ const MovieDetail = () => {
   }
 
   if (!selectedMovie && !loading) {
-    // Redirect to movie list if movie not found
     return (
       <div className="text-center p-5">
         <Alert variant="warning">
@@ -73,74 +89,139 @@ const MovieDetail = () => {
   const hasReviews = selectedMovie && selectedMovie.reviews && selectedMovie.reviews.length > 0;
     
   return (
-    <Container className="py-4 movie-detail-container">
-      <div className="text-center mb-4" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '0px', maxWidth: '420px', margin: '0 auto', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
-        <div className="poster-frame mb-3" style={{ marginBottom: '10px' }}>
+    <div className="movie-detail-page py-4" style={{ background: '#212529', minHeight: '100vh' }}>
+      <Container className="d-flex flex-column align-items-center">
+        {/* Movie Poster */}
+        <div style={{ 
+          maxWidth: '400px', 
+          padding: '15px', 
+          background: 'transparent', 
+          marginBottom: '0'
+        }}>
           <Image 
-            src={selectedMovie.imageUrl} 
+            src={selectedMovie.imageUrl || 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg'} 
             alt={selectedMovie.title}
-            className="movie-poster-img"
             style={{ 
-              maxHeight: '500px',
-              border: '2px solid #fff', 
-              borderRadius: '0px',
-              padding: '0px', 
-              background: 'white',
-              boxShadow: '0 0 5px rgba(0,0,0,0.2)'
+              width: '100%',
+              border: '2px solid #343a40',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
             }}
             onError={(e) => {
-              console.error(`Failed to load image: ${selectedMovie.imageUrl}`);
               e.target.onerror = null;
-              e.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+              e.target.src = 'https://ichef.bbci.co.uk/images/ic/640x360/p061d1pl.jpg';
             }}
           />
         </div>
-
-        <h4 className="text-center" style={{ marginTop: '10px', marginBottom: '10px', fontWeight: 'normal', fontSize: '16px' }}>{selectedMovie.title}</h4>
         
-        {selectedMovie.actors && selectedMovie.actors.length > 0 && (
-          <div className="cast-info text-center" style={{ marginBottom: '15px', lineHeight: '1.2' }}>
-            {selectedMovie.actors.map((actor, i) => (
-              <div key={i} style={{ marginBottom: '4px', color: '#333', fontSize: '14px' }}>
-                <strong>{actor.actorName}</strong> {actor.characterName}
+        {/* Movie Details */}
+        <div style={{ 
+          background: 'white', 
+          color: 'black', 
+          width: '100%', 
+          maxWidth: '400px', 
+          padding: '15px',
+          marginTop: '0'
+        }}>
+          <h5 className="text-center mb-3">{selectedMovie.title}</h5>
+          
+          {selectedMovie.actors && selectedMovie.actors.length > 0 && (
+            <div className="cast-info">
+              {selectedMovie.actors.map((actor, i) => (
+                <div key={i} className="mb-1 text-center">
+                  <strong>{actor.actorName}</strong> {actor.characterName}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <div className="d-flex justify-content-center align-items-center mt-2">
+            <BsStarFill className="text-warning" /> 
+            <span className="ms-2">{selectedMovie.avgRating ? Number(selectedMovie.avgRating).toFixed(0) : '0'}</span>
+          </div>
+        </div>
+        
+        {/* Reviews */}
+        {hasReviews && (
+          <div style={{ 
+            background: '#343a40', 
+            color: '#f8f9fa', 
+            width: '100%', 
+            maxWidth: '400px', 
+            padding: '10px'
+          }}>
+            {selectedMovie.reviews.map((review, i) => (
+              <div key={i} className="d-flex justify-content-between py-1" style={{
+                borderBottom: i < selectedMovie.reviews.length - 1 ? '1px solid #555' : 'none'
+              }}>
+                <div style={{ color: '#aaa', width: '30%' }}>
+                  {review.username || 'Anonymous'}
+                </div>
+                <div style={{ color: '#ddd', width: '60%', textAlign: 'left' }}>
+                  {review.review || 'No comment'}
+                </div>
+                <div style={{ color: '#aaa', width: '10%', textAlign: 'right' }}>
+                  {review.rating}
+                </div>
               </div>
             ))}
           </div>
         )}
-
-        <div className="rating d-flex justify-content-center align-items-center" style={{ marginBottom: '5px' }}>
-          <BsStarFill className="text-warning me-1" style={{ fontSize: '14px' }} /> 
-          <span style={{ fontSize: '14px' }}>{selectedMovie.avgRating ? Number(selectedMovie.avgRating).toFixed(0) : '0'}</span>
+        
+        {/* Review Form */}
+        <div style={{ 
+          background: '#343a40', 
+          width: '100%', 
+          maxWidth: '400px', 
+          padding: '10px'
+        }}>
+          <Form onSubmit={handleReviewSubmit}>
+            <Form.Control
+              as="textarea"
+              rows={1}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Add your review here..."
+              required
+              className="mb-2"
+              style={{ 
+                background: '#343a40', 
+                color: '#f8f9fa', 
+                border: '1px solid #555' 
+              }}
+            />
+            
+            <div className="d-flex">
+              <Form.Select
+                value={rating}
+                onChange={(e) => setRating(parseInt(e.target.value))}
+                className="me-2"
+                style={{ 
+                  background: '#343a40', 
+                  color: '#f8f9fa', 
+                  border: '1px solid #555',
+                  width: '100px'
+                }}
+              >
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+              </Form.Select>
+              
+              <Button 
+                variant="danger" 
+                type="submit" 
+                disabled={submitting}
+                className="flex-grow-1"
+              >
+                {submitting ? 'Submitting...' : 'Submit Review'}
+              </Button>
+            </div>
+          </Form>
         </div>
-      </div>
-          
-      {hasReviews && (
-        <div className="reviews-section bg-dark text-white p-3 mb-0" style={{ maxWidth: '420px', margin: '0 auto' }}>
-          <div className="reviews-list">
-            {selectedMovie.reviews.map((review, i) => (
-              <div key={i} className="review-item py-1 px-2 d-flex justify-content-between" style={{ borderBottom: '1px solid #444' }}>
-                <div className="review-username" style={{ width: '120px', textAlign: 'left', fontSize: '14px', color: '#aaa' }}>
-                  <span>{review.username || 'Anonymous'}</span>
-                </div>
-                <div className="review-text flex-grow-1" style={{ textAlign: 'left', paddingLeft: '10px', fontSize: '14px', color: '#ddd' }}>
-                  {review.review || 'No comment'}
-                </div>
-                <div className="review-rating" style={{ minWidth: '20px', textAlign: 'right', fontSize: '14px', color: '#aaa' }}>
-                  <span>{review.rating}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-          
-      {loggedIn && selectedMovie && (
-        <ReviewForm 
-          movieId={selectedMovie._id} 
-          onReviewAdded={handleReviewAdded}
-        />
-      )}
-    </Container>
+      </Container>
+    </div>
   );
 };
 
