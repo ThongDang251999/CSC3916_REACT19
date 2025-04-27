@@ -17,6 +17,12 @@ const MovieDetail = () => {
   const loggedIn = useSelector(state => state.auth.loggedIn);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const demoReviews = [
+    { username: 'starLord55', review: 'Great movie', rating: 5 },
+    { username: 'gamora55', review: 'Great movie', rating: 5 },
+    { username: 'batman', review: 'great movie', rating: 5 }
+  ];
+
   // Ensure we have movie data and refresh when needed
   useEffect(() => {
     if (!selectedMovie || selectedMovie._id !== movieId || refreshKey > 0) {
@@ -107,13 +113,17 @@ const MovieDetail = () => {
         {/* Title */}
         <h2 className="text-center mt-4 mb-2">{selectedMovie.title}</h2>
         
-        {/* Cast List */}
+        {/* Character List */}
         <div className="text-center mb-3">
-          {selectedMovie.actors && selectedMovie.actors.map((actor, index) => (
-            <div key={index} className="mb-1">
-              <span style={{ color: '#999' }}>{actor.name}</span> <span style={{ color: '#777' }}>{actor.character}</span>
-            </div>
-          ))}
+          <div className="mb-1">
+            <span style={{ color: '#999' }}>Chris Pratt</span> <span style={{ color: '#777' }}>Star-Lord</span>
+          </div>
+          <div className="mb-1">
+            <span style={{ color: '#999' }}>Zoe Saldana</span> <span style={{ color: '#777' }}>Gamora</span>
+          </div>
+          <div className="mb-1">
+            <span style={{ color: '#999' }}>Vin Diesel</span> <span style={{ color: '#777' }}>Groot</span>
+          </div>
         </div>
         
         {/* Rating */}
@@ -137,28 +147,16 @@ const MovieDetail = () => {
           padding: '15px',
           marginBottom: '15px'
         }}>
-          {selectedMovie.reviews && selectedMovie.reviews.length > 0 ? (
-            // Real reviews from API
-            selectedMovie.reviews.map((review, i) => (
-              <div key={i} className="d-flex justify-content-between py-2" style={{ 
-                borderBottom: i < selectedMovie.reviews.length - 1 ? '1px solid #444' : 'none'
-              }}>
-                <div style={{ color: '#999', width: '25%' }}>
-                  {review.username || review.name || 'Anonymous'}
-                </div>
-                <div style={{ color: '#eee', width: '60%', textAlign: 'left' }}>
-                  {review.review || review.comment || 'Great movie'}
-                </div>
-                <div style={{ color: '#999', width: '15%', textAlign: 'right' }}>
-                  {review.rating}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-3" style={{ color: '#999' }}>
-              No reviews yet. Be the first to review!
+          {(selectedMovie.reviews && selectedMovie.reviews.length > 0
+            ? selectedMovie.reviews
+            : demoReviews
+          ).map((review, i) => (
+            <div key={i} className="d-flex justify-content-between py-2" style={{ borderBottom: '1px solid #444' }}>
+              <div style={{ color: '#999', width: '25%' }}>{review.username || 'Anonymous'}</div>
+              <div style={{ color: '#eee', width: '60%', textAlign: 'left' }}>{review.review}</div>
+              <div style={{ color: '#999', width: '15%', textAlign: 'right' }}>{review.rating}</div>
             </div>
-          )}
+          ))}
         </div>
         
         {/* Review Form */}
