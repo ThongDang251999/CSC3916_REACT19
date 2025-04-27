@@ -213,6 +213,15 @@ export function submitReview(reviewData) {
     console.log('API URL for review submission:', `${env.REACT_APP_API_URL}/reviews`);
     console.log('Token for auth:', localStorage.getItem('token') ? 'Token exists' : 'No token found');
     
+    // Ensure the review field name matches what the backend expects
+    const requestBody = {
+        movieId: reviewData.movieId,
+        rating: reviewData.rating,
+        review: reviewData.comment || '' // Ensure proper field mapping
+    };
+    
+    console.log('Request body for review:', requestBody);
+    
     return dispatch => {
         return fetch(`${env.REACT_APP_API_URL}/reviews`, {
             method: 'POST',
@@ -221,11 +230,7 @@ export function submitReview(reviewData) {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('token')
             },
-            body: JSON.stringify({
-                movieId: reviewData.movieId,
-                rating: reviewData.rating,
-                review: reviewData.comment
-            }),
+            body: JSON.stringify(requestBody),
             mode: 'cors'
         }).then((response) => {
             console.log('Review submission response status:', response.status);
@@ -248,7 +253,6 @@ export function submitReview(reviewData) {
         }).then((res) => {
             console.log('Review submitted successfully:', res);
             dispatch(reviewSubmitted());
-            // We don't need to fetch the movie again here as we'll use the callback in the component
             return res;
         }).catch((e) => {
             console.error('Error submitting review (details):', e);
@@ -261,7 +265,8 @@ export function submitReview(reviewData) {
 export function fetchMovieReviews(movieId) {
     console.log('Fetching reviews for movie:', movieId);
     return dispatch => {
-        return fetch(`${env.REACT_APP_API_URL}/reviews/${movieId}`, {
+        // Try the endpoint that matches your HW4 API structure 
+        return fetch(`${env.REACT_APP_API_URL}/movies/${movieId}/reviews`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -272,19 +277,52 @@ export function fetchMovieReviews(movieId) {
         }).then((response) => {
             console.log('Reviews response:', response.status);
             if (!response.ok) {
-                throw new Error(response.statusText || 'Failed to fetch reviews');
+                // Fall back to the alternative endpoint structure if the first one fails
+                console.log('First endpoint failed, trying alternate endpoint');
+                return fetch(`${env.REACT_APP_API_URL}/reviews?movieId=${movieId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token')
+                    },
+                    mode: 'cors'
+                }).then(altResponse => {
+                    if (!altResponse.ok) {
+                        throw new Error(altResponse.statusText || 'Failed to fetch reviews from both endpoints');
+                    }
+                    return altResponse.json();
+                });
             }
             return response.json();
         }).then((res) => {
             console.log('Reviews received:', res);
+            
+            // Normalize the response structure
+            let normalizedReviews = res;
+            
+            // Check if the response is an array of reviews directly
+            if (Array.isArray(res)) {
+                normalizedReviews = res;
+            } 
+            // Check if the response has a 'reviews' property that is an array
+            else if (res && Array.isArray(res.reviews)) {
+                normalizedReviews = res.reviews;
+            }
+            
             // Update the movie with these reviews
             dispatch({
                 type: actionTypes.FETCH_REVIEWS,
-                reviews: res
+                reviews: normalizedReviews
             });
-            return res;
+            return normalizedReviews;
         }).catch((e) => {
             console.error('Error fetching reviews:', e);
+            // If all else fails, dispatch an empty reviews array to avoid UI errors
+            dispatch({
+                type: actionTypes.FETCH_REVIEWS,
+                reviews: []
+            });
             throw e;
         });
     }
