@@ -263,22 +263,28 @@ body, html {
 }
 
 .movie-card {
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   border: none;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .movie-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .movie-card-img-container {
-  height: 300px;
   overflow: hidden;
+  position: relative;
+  padding-top: 150%; /* 2:3 aspect ratio */
 }
 
 .movie-card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
@@ -378,4 +384,34 @@ body, html {
 .review-rating {
   color: #ddd;
   font-weight: bold;
+}
+
+/* Search Styles */
+.search-input {
+    border-radius: 20px 0 0 20px;
+    border: 2px solid #6c757d;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.search-input + .btn {
+    border-radius: 0 20px 20px 0;
+    padding: 10px 20px;
+}
+
+.search-input + .btn + .btn {
+    border-radius: 20px;
+    padding: 10px 15px;
+}
+
+/* Loading Spinner */
+.spinner-border {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
 }
