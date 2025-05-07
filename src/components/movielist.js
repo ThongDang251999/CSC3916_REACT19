@@ -116,7 +116,6 @@ function MovieList() {
                         placeholder="Search movies or actors..."
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        onKeyPress={handleKeyPress}
                         className="search-input"
                     />
                     <Button 
