@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Card, Row, Col, Alert, Container, Form, Button, Spinner } from 'react-bootstrap';
 import { BsStarFill, BsSearch, BsX } from 'react-icons/bs';
 import debounce from 'lodash/debounce';
+import MovieImage from './MovieImage';
 
 function MovieList() {
     const dispatch = useDispatch();
@@ -163,15 +164,10 @@ function MovieList() {
                                 style={{ textDecoration: 'none' }}
                             >
                                 <div className="movie-card-img-container">
-                                    <Card.Img 
-                                        variant="top" 
-                                        src={movie.imageUrl || 'https://via.placeholder.com/300x450?text=No+Image'} 
+                                    <MovieImage
+                                        src={movie.imageUrl}
                                         alt={movie.title}
                                         className="movie-card-img"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = 'https://via.placeholder.com/300x450?text=Image+Error';
-                                        }}
                                     />
                                 </div>
                                 <Card.Body className="text-center">
