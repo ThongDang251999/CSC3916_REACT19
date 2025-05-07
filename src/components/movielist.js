@@ -15,6 +15,7 @@ function MovieList() {
     const loggedIn = useSelector(state => state.auth.loggedIn);
     const [searchTerm, setSearchTerm] = useState("");
     const [isSearching, setIsSearching] = useState(false);
+    const searchResults = useSelector(state => state.movie.searchResults);
 
     // Debounced search function
     const debouncedSearch = useCallback(
@@ -51,25 +52,21 @@ function MovieList() {
         dispatch(fetchMovies());
     };
 
-    // Handle Enter key press
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            handleSearch(e);
-        }
-    };
+    // Use searchResults if searching, otherwise use movies
+    const moviesToDisplay = searchTerm.trim() ? searchResults : movies;
 
-    // Memoize the movies array
+    // Deduplicate by title and release year
     const memoizedMovies = useMemo(() => {
-        if (!movies) return [];
+        if (!moviesToDisplay) return [];
         const uniqueMovies = new Map();
-        movies.forEach(movie => {
-            const existingMovie = uniqueMovies.get(movie.title);
-            if (!existingMovie || (movie.avgRating > existingMovie.avgRating)) {
-                uniqueMovies.set(movie.title, movie);
+        moviesToDisplay.forEach(movie => {
+            const key = `${movie.title}-${movie.releaseDate}`;
+            if (!uniqueMovies.has(key)) {
+                uniqueMovies.set(key, movie);
             }
         });
         return Array.from(uniqueMovies.values());
-    }, [movies]);
+    }, [moviesToDisplay]);
 
     useEffect(() => {
         if (!searchTerm) {
